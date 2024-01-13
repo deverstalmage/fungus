@@ -13,7 +13,16 @@ export const Rarities: RarityMap = {
     Secret: 0.001,
 }
 
-export function roll(): Rarity {
+export function roll(rarities?: Array<Rarity>): Rarity {
   const r = Math.random();
-  return r <= Rarities.Secret ? 'Secret' : r <= Rarities["Ultra Rare"] ? 'Ultra Rare' : r <= Rarities.Rare ? 'Rare' : r <= Rarities.Uncommon ? 'Uncommon' : 'Common';
+
+  if (r <= Rarities.Secret && (!rarities || (rarities && rarities.includes('Secret')))) return 'Secret';
+  if (r <= Rarities['Ultra Rare'] && (!rarities || (rarities && rarities.includes('Ultra Rare')))) return 'Ultra Rare';
+  if (r <= Rarities.Rare && (!rarities || (rarities && rarities.includes('Rare')))) return 'Rare';
+  if (r <= Rarities.Uncommon && (!rarities || (rarities && rarities.includes('Uncommon')))) return 'Uncommon';
+  if (r <= Rarities.Common && (!rarities || (rarities && rarities.includes('Common')))) return 'Common';
+
+  if (rarities && rarities.length) return rarities[0];
+  return 'Common';
+  // return r <= Rarities.Secret && rarities && rarities.includes('Secret') ? 'Secret' : r <= Rarities["Ultra Rare"] ? 'Ultra Rare' : r <= Rarities.Rare ? 'Rare' : r <= Rarities.Uncommon ? 'Uncommon' : 'Common';
 }

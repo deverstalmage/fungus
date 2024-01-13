@@ -1,8 +1,8 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client'
+import { DateTime } from 'luxon';
 import Link from 'next/link'
-import { useLocalStorage } from '@/useLocalStorage';
-import { roll } from '@/lib/rarity';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { Rarity, roll } from '@/lib/rarity';
 
 const dropTable = [
   { name: 'Compost', rarity: 'Common' },
@@ -10,16 +10,16 @@ const dropTable = [
 ];
 
 function drop(): string {
-  const rarity = roll();
+  const rarity = roll(dropTable.map(i => i.rarity as Rarity));
   const items = dropTable.filter(item => item.rarity === rarity);
   return items[Math.floor(Math.random() * items.length)].name;
 }
 
-function timeSince(date: Date) {
+function timeSince(date: DateTime) {
 
-  var seconds = Math.floor(((new Date()).getTime() - date.getTime()) / 1000);
+  const seconds = Math.floor((DateTime.now().valueOf() - date.valueOf()) / 1000);
 
-  var interval = seconds / 31536000;
+  let interval = seconds / 31536000;
 
   if (interval > 1) {
     return Math.floor(interval) + " years";
@@ -44,24 +44,25 @@ function timeSince(date: Date) {
 }
 
 export default function CompostPile() {
-
-  const [lastTurned, setLastTurned] = useLocalStorage('compost-last-turned', Date.now());
+  const [lastTurned, setLastTurned] = useLocalStorage('compost-last-turned', DateTime.now());
 
   const turn = () => {
-    const now = Date.now();
-    if (lastTurned < (now - 1000*60*5)) { // 5 min
+    if (canTurn) {
       console.log('Got item: ', drop());
-      setLastTurned(now)
-    } 
+      setLastTurned(DateTime.now().valueOf());
+    }
   };
 
+  const canTurn = lastTurned <= (DateTime.now().valueOf() - 1000 * 60 * 5); // 5 min
+  const lastTurnedAgo = timeSince(DateTime.fromMillis(lastTurned));
+
   return (
-    <main className={styles.main}>
+    <main>
       <h1>Compost Pile</h1>
-      <h2>It doesn't smell that great here...</h2>
-      <p>Compost was last turned {timeSince(new Date(lastTurned))} ago</p>
-      <button onDoubleClick={turn}>Turn those leaves</button>
-      <Link href="garden">Back to the garden</Link>
+      <h2>It doesn&rsquo;t smell that great here...</h2>
+      <p>Compost was last turned {lastTurnedAgo} ago</p>
+      <p><button disabled={!canTurn} onDoubleClick={turn}>Turn those leaves</button></p>
+      <p><Link href="garden">Back to the garden</Link></p>
     </main>
   )
 }
