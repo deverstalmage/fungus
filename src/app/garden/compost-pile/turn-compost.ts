@@ -4,6 +4,7 @@ import { Rarity, roll } from '@/lib/rarity';
 import { hasPassed, timeUntil } from '@/lib/time';
 import { getItem, Item } from '@/db/items';
 import prisma from '@/lib/prisma';
+import { obtainItem } from '@/lib/inventory';
 
 const turnIntervalMilli = 1000;// * 60 * 5;
 const turnInvervalDur = { milliseconds: turnIntervalMilli };
@@ -26,13 +27,7 @@ export default async function turnCompost() {
   if (hasPassed(lastTurnedDateTime.plus(turnInvervalDur))) {
 
     const droppedItem = drop(dropTable);
-    await prisma.item.create({
-      data: {
-        itemId: droppedItem.id,
-        userId: user?.id as number,
-      },
-    });
-
+    await obtainItem(droppedItem.id);
     await prisma.user.update({
       where: { id: user.id },
       data: {
