@@ -1,20 +1,7 @@
+import { Rarity } from '@/lib/rarity';
+
 export type FungusType = 'Mushroom' | 'Morel' | 'Truffle' | 'Toadstool' | 'Slime Mold' | 'Jelly' | 'Lichen';
 export const Types: Array<FungusType> = ['Mushroom', 'Morel', 'Truffle', 'Toadstool', 'Slime Mold', 'Jelly', 'Lichen'];
-
-export type Rarity = 'Common' | 'Uncommon' | 'Rare' | 'Ultra Rare' | 'Secret';
-export type Grade = 'D' | 'C' | 'B' | 'A' | 'S' | 'Ω';
-
-export type RarityMap = {
-    [R in Rarity]: number;
-}
-
-export const Rarities: RarityMap = {
-    Common: 0.75,
-    Uncommon: 0.2,
-    Rare: 0.01,
-    'Ultra Rare': 0.005,
-    Secret: 0.001,
-}
 
 export type Fungus = {
     name: string;

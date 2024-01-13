@@ -2,6 +2,18 @@ import Image from 'next/image'
 import styles from './page.module.css'
 import Link from 'next/link'
 import { useLocalStorage } from '@/useLocalStorage';
+import { roll } from '@/lib/rarity';
+
+const dropTable = [
+  { name: 'Compost', rarity: 'Common' },
+  { name: 'Slug', rarity: 'Uncommon' }
+];
+
+function drop(): string {
+  const rarity = roll();
+  const items = dropTable.filter(item => item.rarity === rarity);
+  return items[Math.floor(Math.random() * items.length)].name;
+}
 
 function timeSince(date: Date) {
 
@@ -35,12 +47,20 @@ export default function CompostPile() {
 
   const [lastTurned, setLastTurned] = useLocalStorage('compost-last-turned', Date.now());
 
+  const turn = () => {
+    const now = Date.now();
+    if (lastTurned < (now - 1000*60*5)) { // 5 min
+      console.log('Got item: ', drop());
+      setLastTurned(now)
+    } 
+  };
+
   return (
     <main className={styles.main}>
       <h1>Compost Pile</h1>
       <h2>It doesn't smell that great here...</h2>
       <p>Compost was last turned {timeSince(new Date(lastTurned))} ago</p>
-      <button >Turn those leaves</button>
+      <button onDoubleClick={turn}>Turn those leaves</button>
       <Link href="garden">Back to the garden</Link>
     </main>
   )
