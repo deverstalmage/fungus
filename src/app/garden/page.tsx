@@ -10,7 +10,7 @@ export default function Garden() {
         <li>Plot 2</li>
         <li>Plot 3</li>
       </ol>
-      <Link href="garden/compost-pile">Check out the compost pile</Link>
+      <Link href="/garden/compost-pile">Check out the compost pile</Link>
     </main>
   );
 }
