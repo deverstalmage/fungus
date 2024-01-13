@@ -4,6 +4,7 @@ import './globals.css';
 import HUD from '@/app/hud';
 import prisma from '@/lib/prisma';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const poppins = Poppins({ weight: '400', subsets: ['latin'] });
 
