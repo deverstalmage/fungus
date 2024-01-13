@@ -11,12 +11,13 @@ datasource db {
 }
 
 model User {
-  id          Int          @id @default(autoincrement())
-  name        String
-  items       Item[]
-  fungi       Fungus[]
-  gardenPlots GardenPlot[]
-  level       Int          @default(1)
+  id                Int          @id @default(autoincrement())
+  name              String
+  items             Item[]
+  fungi             Fungus[]
+  gardenPlots       GardenPlot[]
+  level             Int          @default(1)
+  lastTurnedCompost BigInt       @default(0)
 }
 
 model Item {

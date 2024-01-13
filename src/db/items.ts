@@ -8,7 +8,11 @@ export type Item = {
   equipment?: boolean;
 };
 
-export const ItemLibrary = [
+export const ItemLibrary: Array<Item> = [
   { id: 1, name: 'Compost', rarity: 'Common' },
   { id: 2, name: 'Slug', rarity: 'Uncommon' },
 ];
+
+export function getItem(id: number): Item {
+  return ItemLibrary.filter(i => i.id === id)[0];
+}
