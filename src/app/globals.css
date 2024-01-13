@@ -3,3 +3,12 @@
   --text: #eddaa6;
   --link: ##9272b3;
 }
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+a {
+  color: var(--link);
+}
