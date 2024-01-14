@@ -3,6 +3,7 @@ import { Item, getItem } from "@/db/items";
 import getCurrentUser from "@/lib/user";
 import { toast } from "react-toastify";
 import GetItem from '@/app/get-item';
+import { Rarity, roll } from "./rarity";
 
 export async function alertItem(items: Item[]) {
   for (const item of items) {
@@ -45,6 +46,11 @@ export async function obtainItem(id: number) {
   return;
 }
 
+export function drop(table: Array<Item>): Item {
+  const rarity = roll(table.map(i => i.rarity as Rarity));
+  const items = table.filter(item => item.rarity === rarity);
+  return items[Math.floor(Math.random() * items.length)];
+}
 
 export default function getInventory() {
 
