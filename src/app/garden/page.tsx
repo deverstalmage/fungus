@@ -1,15 +1,18 @@
+import prisma from "@/lib/prisma";
+import getCurrentUser from "@/lib/user";
 import Link from "next/link";
 
-export default function Garden() {
+export default async function Garden() {
+  const user = await getCurrentUser();
+  const plots = await prisma.gardenPlot.findMany({ where: { userId: user?.id } });
+
   return (
     <main>
       <h1>The Garden</h1>
       <h2>Select a plot:</h2>
-      <ol>
-        <li>Plot 1</li>
-        <li>Plot 2</li>
-        <li>Plot 3</li>
-      </ol>
+      <ul>
+        {plots.map((p, i) => <li key={i}><Link href={`/garden/plot/${p.id}`}>Plot {p.id}</Link></li>)}
+      </ul>
       <p><Link href="/garden/compost-pile">Check out the compost pile</Link></p>
       <p><Link href="/">Return home</Link></p>
     </main>

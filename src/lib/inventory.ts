@@ -32,13 +32,6 @@ export async function obtainItem(id: number) {
         userId,
       },
     });
-
-    await prisma.item.create({
-      data: {
-        userId,
-        itemId,
-      },
-    });
   } catch (e) {
     alert(e);
   }

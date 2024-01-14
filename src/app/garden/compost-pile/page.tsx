@@ -1,12 +1,12 @@
 import { DateTime } from 'luxon';
 import Link from 'next/link';
 import { hasPassed, timeUntil } from '@/lib/time';
-import prisma from '@/lib/prisma';
 import TurnButton from './turn-button';
 import { turnInvervalDur } from './intervals';
+import getCurrentUser from '@/lib/user';
 
 export default async function CompostPile() {
-  const user = await prisma.user.findUnique({ where: { id: 1 } });
+  const user = await getCurrentUser();
   const lastTurned = Number(user?.lastTurnedCompost);
   const lastTurnedDateTime = DateTime.fromMillis(lastTurned);
   const canTurn = hasPassed(lastTurnedDateTime.plus(turnInvervalDur));

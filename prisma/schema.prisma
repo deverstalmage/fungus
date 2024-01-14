@@ -21,16 +21,18 @@ model User {
 }
 
 model Item {
-  id     Int  @id @default(autoincrement())
-  itemId Int
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  id        Int     @id @default(autoincrement())
+  itemId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+  isKeyItem Boolean @default(false)
 }
 
 model GardenPlot {
   id     Int      @id @default(autoincrement())
   user   User     @relation(fields: [userId], references: [id])
   userId Int
+  level  Int      @default(1)
   fungi  Fungus[]
 }
 
