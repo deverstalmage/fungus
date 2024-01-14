@@ -45,6 +45,8 @@ export function randomItem(table: Array<Item>): Item {
   return items[Math.floor(Math.random() * items.length)];
 }
 
-export default function getInventory() {
-
+export async function getInventory() {
+  const user = await getCurrentUser();
+  const items = await prisma.item.findMany({ where: { userId: user?.id } });
+  return items.map(i => getItem(i.itemId));
 }

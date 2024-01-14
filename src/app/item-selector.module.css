@@ -1,0 +1,15 @@
+.itemList {
+  display: flex;
+}
+
+.itemSlot {
+  margin: 0 10px 10px 0;
+  padding: 10px;
+  border: 2px solid transparent;
+  border-radius: 3px;
+}
+
+.itemSlot:hover,
+.selected {
+  border: 2px solid lightblue;
+}
