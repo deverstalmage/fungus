@@ -1,3 +1,12 @@
+.Common,
+.Uncommon,
+.Rare,
+.UltraRare,
+.Secret {
+  /* box-shadow: 1px 1px 1px black; */
+  background-color: #ccc;
+}
+
 .Common {
   color: green;
 }
@@ -7,7 +16,7 @@
 }
 
 .Rare {
-  color: yellow;
+  color: gold;
 }
 
 .UltraRare {

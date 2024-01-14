@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
-import HUD from '@/app/hud';
-import prisma from '@/lib/prisma';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import getCurrentUser from '@/lib/user';
 
 const poppins = Poppins({ weight: '400', subsets: ['latin'] });
 
@@ -13,12 +12,12 @@ export const metadata: Metadata = {
   description: 'Forage for fungus and build your farm',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = prisma.user.findUnique({ where: { id: 1 } });
+  const user = await getCurrentUser();
 
   return (
     <html lang="en">
@@ -35,7 +34,10 @@ export default function RootLayout({
           pauseOnHover
           theme="light"
         />
-        <HUD />
+        <div>
+          <p>Energy: [ {user?.energy} / 100 ]</p>
+          <p>Currency: 100</p>
+        </div>
         {children}
       </body>
     </html>

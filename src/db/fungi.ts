@@ -66,4 +66,18 @@ const F: FungusDB = {
     Lichen: Lichens,
 };
 
+const FungusLibrary = [
+    ...Mushrooms,
+    ...Morels,
+    ...Truffles,
+    ...Toadstools,
+    ...SlimeMolds,
+    ...Jellies,
+    ...Lichens,
+];
+
+export function getFungus(id: number): Fungus {
+    return FungusLibrary.filter(i => i.id === id)[0];
+}
+
 export default F;
