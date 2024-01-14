@@ -1,0 +1,19 @@
+.Common {
+  color: green;
+}
+
+.Uncommon {
+  color: blue;
+}
+
+.Rare {
+  color: yellow;
+}
+
+.UltraRare {
+  color: orange;
+}
+
+.Secret {
+  color: magenta;
+}

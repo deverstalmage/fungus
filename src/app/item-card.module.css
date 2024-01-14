@@ -1,5 +1,22 @@
 .item {
+  color: black;
+  font-weight: bold;
   border-radius: 2px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
   padding: 10px;
+  background-color: white;
+  width: 200px;
+  height: 300px;
+  box-sizing: border-box;
+  justify-content: space-between;
+  align-items: flex-end;
+  /* position: relative; */
+}
+
+.imgFrame {
+  border: 1px solid black;
+}
+
+.item img {
+  object-fit: contain;
 }

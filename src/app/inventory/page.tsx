@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import getCurrentUser from "@/lib/user";
 import { getItem } from "@/db/items";
+import ItemCard from "@/app/item-card";
 
 export default async function Inventory() {
   const currentUser = await getCurrentUser();
@@ -16,7 +17,7 @@ export default async function Inventory() {
     <div>
       <h1>Inventory</h1>
       <ol>
-        {items.map((item, i) => <li key={i}>{item.name}</li>)}
+        {items.map((item, i) => <li key={i}><ItemCard item={item} /></li>)}
       </ol>
     </div>
   );

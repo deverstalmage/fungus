@@ -5,6 +5,14 @@ export type RarityMap = {
   [R in Rarity]: number;
 };
 
+export const rarityStars: { [R in Rarity]: string } = {
+  'Common': `⭐️`,
+  'Uncommon': `⭐️⭐️`,
+  'Rare': `⭐️⭐️⭐️`,
+  'Ultra Rare': `⭐️⭐️⭐️⭐️`,
+  'Secret': `⭐️⭐️⭐️⭐️⭐️`,
+};
+
 export function randomNum(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min); // The maximum is inclusive and the minimum is inclusive
 }
