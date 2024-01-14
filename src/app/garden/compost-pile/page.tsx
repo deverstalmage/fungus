@@ -3,9 +3,7 @@ import Link from 'next/link';
 import { hasPassed, timeUntil } from '@/lib/time';
 import prisma from '@/lib/prisma';
 import TurnButton from './turn-button';
-
-const turnIntervalMilli = 1000;// * 60 * 5;
-const turnInvervalDur = { milliseconds: turnIntervalMilli };
+import { turnInvervalDur } from './intervals';
 
 export default async function CompostPile() {
   const user = await prisma.user.findUnique({ where: { id: 1 } });

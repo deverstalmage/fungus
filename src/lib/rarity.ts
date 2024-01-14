@@ -38,3 +38,18 @@ export function roll(rarities?: Array<Rarity>): Rarity {
   return 'Common';
   // return r <= Rarities.Secret && rarities && rarities.includes('Secret') ? 'Secret' : r <= Rarities["Ultra Rare"] ? 'Ultra Rare' : r <= Rarities.Rare ? 'Rare' : r <= Rarities.Uncommon ? 'Uncommon' : 'Common';
 }
+
+export function randomFrequencyTableEntry(table: { [k: string | number]: number; }): number | string | undefined {
+  const r = Math.random();
+  let entry;
+  let rarestVal = 1;
+
+  for (const [key, val] of Object.entries(table)) {
+    if (r <= val && val <= rarestVal) {
+      rarestVal = val;
+      entry = key;
+    }
+  }
+
+  return entry;
+}

@@ -46,7 +46,7 @@ export async function obtainItem(id: number) {
   return;
 }
 
-export function drop(table: Array<Item>): Item {
+export function randomItem(table: Array<Item>): Item {
   const rarity = roll(table.map(i => i.rarity as Rarity));
   const items = table.filter(item => item.rarity === rarity);
   return items[Math.floor(Math.random() * items.length)];
