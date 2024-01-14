@@ -5,6 +5,10 @@ export type RarityMap = {
   [R in Rarity]: number;
 };
 
+export function randomNum(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1) + min); // The maximum is inclusive and the minimum is inclusive
+}
+
 export const Rarities: RarityMap = {
   Common: 1,
   Uncommon: 0.25,

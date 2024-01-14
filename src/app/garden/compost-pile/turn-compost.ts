@@ -1,6 +1,6 @@
 'use server';
 import { DateTime } from 'luxon';
-import { Rarity, roll } from '@/lib/rarity';
+import { Rarity, roll, randomNum } from '@/lib/rarity';
 import { hasPassed } from '@/lib/time';
 import { getItem, Item } from '@/db/items';
 import prisma from '@/lib/prisma';
@@ -10,6 +10,8 @@ const turnIntervalMilli = 1000;// * 60 * 5;
 const turnInvervalDur = { milliseconds: turnIntervalMilli };
 
 const dropTable = [getItem(1), getItem(2)];
+const minDrops = 1;
+const maxDrops = 3;
 
 function drop(table: Array<Item>): Item {
   const rarity = roll(table.map(i => i.rarity as Rarity));
@@ -26,8 +28,14 @@ export default async function turnCompost() {
 
   if (hasPassed(lastTurnedDateTime.plus(turnInvervalDur))) {
 
-    const droppedItem = drop(dropTable);
-    await obtainItem(droppedItem.id);
+    const items = [];
+    const numDrops = randomNum(minDrops, maxDrops);
+    for (let i = 0; i < numDrops; i++) {
+      const d = drop(dropTable);
+      items.push(d);
+      await obtainItem(d.id);
+    }
+
     await prisma.user.update({
       where: { id: user.id },
       data: {
@@ -35,6 +43,6 @@ export default async function turnCompost() {
       },
     });
 
-    return droppedItem;
+    return items;
   }
 };

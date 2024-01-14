@@ -11,6 +11,7 @@ export type Item = {
 export const ItemLibrary: Array<Item> = [
   { id: 1, name: 'Compost', rarity: 'Common' },
   { id: 2, name: 'Slug', rarity: 'Uncommon' },
+  { id: 3, name: 'Pixie Dust', rarity: 'Rare' },
 ];
 
 export function getItem(id: number): Item {

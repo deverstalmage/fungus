@@ -2,16 +2,18 @@ import prisma from "@/lib/prisma";
 import { Item, getItem } from "@/db/items";
 import getCurrentUser from "@/lib/user";
 import { toast } from "react-toastify";
-import ItemComponent from '@/app/item';
+import GetItem from '@/app/get-item';
 
-export async function alertItem(item: Item) {
-  toast(() => ItemComponent({ item }), {
-    position: "top-right",
-    autoClose: 5000,
-    hideProgressBar: false,
-    pauseOnHover: true,
-    theme: "light",
-  });
+export async function alertItem(items: Item[]) {
+  for (const item of items) {
+    toast(() => GetItem({ item }), {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: true,
+      pauseOnHover: true,
+      theme: "light",
+    });
+  }
 }
 
 export async function obtainItem(id: number) {
