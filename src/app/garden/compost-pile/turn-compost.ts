@@ -1,7 +1,7 @@
 'use server';
 import { DateTime } from 'luxon';
 import { Rarity, roll } from '@/lib/rarity';
-import { hasPassed, timeUntil } from '@/lib/time';
+import { hasPassed } from '@/lib/time';
 import { getItem, Item } from '@/db/items';
 import prisma from '@/lib/prisma';
 import { obtainItem } from '@/lib/inventory';
