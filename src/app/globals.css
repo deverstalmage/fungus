@@ -9,6 +9,12 @@ body {
   color: var(--text);
 }
 
+body,
+html {
+  height: 100%;
+  margin: 0;
+}
+
 a {
   color: var(--link);
 }

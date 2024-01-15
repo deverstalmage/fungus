@@ -21,7 +21,7 @@ export default async function Inventory() {
   return (
     <div>
       <h1>Inventory</h1>
-      <h2>Fungus</h2>
+      <h2>Fungi Spores</h2>
 
       <div className={styles.inventory}>
         {fungi.map((fungus, i) => <div key={i} className={styles.itemSlot}><FungusCard key={i} fungus={fungus} /></div>)}

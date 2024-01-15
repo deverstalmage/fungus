@@ -4,6 +4,7 @@ import './globals.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import getCurrentUser from '@/lib/user';
+import styles from '@/app/layout.module.css';
 
 const poppins = Poppins({ weight: '400', subsets: ['latin'] });
 
@@ -14,8 +15,10 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   const user = await getCurrentUser();
 
@@ -34,11 +37,15 @@ export default async function RootLayout({
           pauseOnHover
           theme="light"
         />
-        <div>
-          <p>Energy: [ {user?.energy} / 100 ]</p>
-          <p>Currency: 100</p>
+        <div className={styles.layout}>
+          <div className={styles.hud}>
+            <div>Energy: [ {user?.energy} / 100 ]</div>
+            <div>Currency: 100</div>
+          </div>
+          {children}
+          {modal}
         </div>
-        {children}
+        <div id="modal-root" />
       </body>
     </html>
   );

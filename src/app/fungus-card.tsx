@@ -4,7 +4,6 @@ import Image from 'next/image';
 import RarityDisplay from './rarity-display';
 
 export default function Fungus({ fungus }: { fungus: Fungus; }) {
-  console.log(fungus.name.toLowerCase().replace(' ', '-'));
   return (
     <div className={styles.card}>
       <div className={styles.type}>{fungus.type}</div>

@@ -1,4 +1,4 @@
-import { DateTime, DurationLike, Duration } from 'luxon';
+import { DateTime, Duration, DurationLike } from 'luxon';
 
 const units: Intl.RelativeTimeFormatUnit[] = [
   // 'year',
@@ -10,11 +10,16 @@ const units: Intl.RelativeTimeFormatUnit[] = [
   'second',
 ];
 
-export function timeUntil(startTime: DateTime, dur: DurationLike): string {
-  const newTime = startTime.plus(dur);
+export function timeUntil(time: DateTime, offset?: DurationLike): string {
+  const newTime: DateTime = offset ? time.plus(offset) : time;
   const diff = newTime.diffNow().shiftTo(...units);
+  const format = Duration.fromObject({ hours: diff.hours, minutes: diff.minutes, seconds: diff.seconds });
+
   if (diff.toMillis() <= 0) return 'now';
-  return `in ${diff.toHuman()}`;
+  const hours = diff.hours ? `${diff.hours} hours, ` : ``;
+  const minutes = diff.minutes ? `${diff.minutes} minutes, ` : ``;
+  const seconds = ` ${Math.ceil(diff.seconds)} seconds`;
+  return `in ${hours}${minutes}${seconds}`;
 }
 
 export function hasPassed(date: DateTime) {

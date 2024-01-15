@@ -1,8 +1,8 @@
 'use server';
 import { DateTime } from 'luxon';
-import { Rarity, roll, randomNum, randomFrequencyTableEntry } from '@/lib/rarity';
+import { randomFrequencyTableEntry } from '@/lib/rarity';
 import { hasPassed } from '@/lib/time';
-import { getItem, Item } from '@/db/items';
+import { getItem } from '@/db/items';
 import prisma from '@/lib/prisma';
 import { obtainItem, randomItem } from '@/lib/inventory';
 import { turnInvervalDur } from './intervals';
@@ -26,8 +26,6 @@ export default async function turnCompost() {
       items.push(d);
       await obtainItem(d.id);
     }
-
-    console.log(`ITEMS`, items);
 
     await prisma.user.update({
       where: { id: user.id },
