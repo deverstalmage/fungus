@@ -25,7 +25,7 @@ export default function Modal({ children }: { children: React.ReactNode; }) {
   }
 
   return createPortal(
-    <div className={styles.modalBackdrop} onClick={onDismiss}>
+    <div className={styles.modalBackdrop}>{/*  onClick={onDismiss} */}
       <dialog ref={dialogRef} className={styles.modal} onClose={onClose}>
         {children}
         <button onClick={onDismiss} className={styles.closeButton} />

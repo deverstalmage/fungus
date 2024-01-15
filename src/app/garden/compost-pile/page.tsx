@@ -14,16 +14,13 @@ export default async function CompostPile() {
   const lastTurnedDateTime = DateTime.fromMillis(lastTurned);
   const nextTurn = lastTurnedDateTime.plus(turnInvervalDur).toISO();
   const canTurn = hasPassed(lastTurnedDateTime.plus(turnInvervalDur));
-  // const nextAvailable = timeUntil(lastTurnedDateTime, turnInvervalDur);
 
   return (
     <main>
       <h1>Compost Pile</h1>
-      <h2>It doesn&rsquo;t smell that great here...</h2>
       <p>Compost was last turned {lastTurnedDateTime.toRelative({ unit: ['hours', 'minutes', 'seconds'] })}</p>
       <p>Turn the leaves again <Countdown date={nextTurn || DateTime.now().toISO()} /></p>
       <TurnButton canTurn={canTurn} />
-      <p><Link href="/garden">Back to the garden</Link></p>
     </main>
   );
 }

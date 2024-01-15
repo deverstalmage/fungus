@@ -2,11 +2,7 @@ import prisma from "@/lib/prisma";
 import getCurrentUser from "@/lib/user";
 import Link from "next/link";
 
-export default async function Garden({
-  modal,
-}: {
-  modal: React.ReactNode;
-}) {
+export default async function Garden() {
   const user = await getCurrentUser();
   const plots = await prisma.gardenPlot.findMany({ where: { userId: user?.id } });
 
@@ -18,8 +14,6 @@ export default async function Garden({
         {plots.map((p, i) => <li key={i}><Link href={`/garden/plots/${p.id}`}>Plot {p.id}</Link></li>)}
       </ul>
       <p><Link href="/garden/compost-pile">Check out the compost pile</Link></p>
-      <p><Link href="/">Return home</Link></p>
-      {modal}
     </main>
   );
 }

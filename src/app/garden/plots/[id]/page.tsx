@@ -1,15 +1,5 @@
-import prisma from "@/lib/prisma";
-import Link from "next/link";
+import Plot from './plot';
 
-export default async function Plot({ params: { id } }: { params: { id: number; }; }) {
-  const plot = await prisma.gardenPlot.findUnique({ where: { id: Number(id) } });
-  if (!plot) return;
-
-  return (
-    <div>
-      <div>Plot: {plot.id}</div>
-
-      <p><Link href="/garden">Back to garden entrance</Link></p>
-    </div>
-  );
+export default async function PlotPage({ params: { id } }: { params: { id: number; }; }) {
+  return <Plot id={Number(id)} />;
 }

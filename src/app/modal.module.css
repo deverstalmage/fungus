@@ -17,15 +17,12 @@
   height: auto;
   max-height: 80%;
   border: none;
-  border-radius: 12px;
-  background-color: rgb(109, 76, 24);
+  background-color: var(--modal-bg);
   padding: 20px;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 48px;
-  font-weight: 500;
 }
 
 .closeButton {

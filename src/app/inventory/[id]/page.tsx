@@ -14,7 +14,9 @@ export default async function ExamineInventoryItem({ params: { id } }: { params:
   return (
     <div>
       <h1>{item.name}</h1>
-      <RarityDisplay rarity={item.rarity} />
+      <div>
+        <RarityDisplay rarity={item.rarity} />
+      </div>
     </div>
   );
 }

@@ -2,6 +2,8 @@
   --bg: #382b1d;
   --text: #eddaa6;
   --link: ##9272b3;
+  --modal-bg: rgb(109, 76, 24);
+  --toastify-toast-background: var(--modal-bg);
 }
 
 body {

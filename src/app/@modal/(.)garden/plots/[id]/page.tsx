@@ -1,13 +1,10 @@
+import Plot from '@/app/garden/plots/[id]/plot';
 import Modal from '@/app/modal';
-import prisma from '@/lib/prisma';
 
-export default async function Plot({ params: { id } }: { params: { id: number; }; }) {
-  const plot = await prisma.gardenPlot.findUnique({ where: { id: Number(id) } });
-  if (!plot) return;
-
+export default async function PlotPage({ params: { id } }: { params: { id: number; }; }) {
   return (
     <Modal>
-      <div>Plot: {plot?.id}</div>
+      <Plot id={Number(id)} />
     </Modal>
   );
 }

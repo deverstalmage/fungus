@@ -31,7 +31,6 @@ export default async function Inventory() {
       <div className={styles.inventory}>
         {items.map((item, i) => <div key={i} className={styles.itemSlot}><ItemCard key={i} item={item} /></div>)}
       </div>
-      <p><Link href="/">Return home</Link></p>
     </div>
   );
 }

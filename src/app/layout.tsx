@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import getCurrentUser from '@/lib/user';
 import styles from '@/app/layout.module.css';
+import Link from 'next/link';
 
 const poppins = Poppins({ weight: '400', subsets: ['latin'] });
 
@@ -38,9 +39,10 @@ export default async function RootLayout({
           theme="light"
         />
         <div className={styles.layout}>
+          <div><Link href={'/'}>Home</Link> | <Link href="/garden">Garden</Link></div>
           <div className={styles.hud}>
             <div>Energy: [ {user?.energy} / 100 ]</div>
-            <div>Currency: 100</div>
+            <div>Resources / Currency: 100</div>
           </div>
           {children}
           {modal}
