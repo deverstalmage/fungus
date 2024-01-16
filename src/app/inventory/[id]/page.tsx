@@ -9,7 +9,7 @@ export default async function ExamineInventoryItem({ params: { id } }: { params:
   const items = await prisma.item.findMany({ where: { userId: user?.id, itemId: Number(id) } });
   if (items.length <= 0) throw new Error();
 
-  const item = getItem(items[0].id);
+  const item = getItem(items[0].itemId);
 
   return (
     <div>

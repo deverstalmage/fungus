@@ -1,0 +1,23 @@
+.sporeSelector {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.emptySpace {
+  border: 1px solid black;
+  width: 200px;
+  height: 250px;
+  cursor: pointer;
+  margin: 0 10px 10px 0;
+  padding: 10px;
+  position: relative;
+}
+
+.plot,
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+}

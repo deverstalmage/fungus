@@ -1,54 +1,86 @@
-import prisma from "@/lib/prisma";
-import getCurrentUser from "@/lib/user";
-import Link from "next/link";
-import styles from './page.module.css';
+'use client';
+import { Fungus } from "@/db/fungi";
+import styles from './plot.module.css';
 import FungusCard from "@/app/fungus-card";
-import { getFungus } from "@/db/fungi";
+import { useState } from "react";
+import { Item } from "@/db/items";
+import ItemCard from "@/app/item-card";
 
 const plotSizeByLevel = [
+  3,
+  3,
+  3,
+  3,
+  5,
+  5,
+  5,
+  5,
+  5,
   10,
   10,
   10,
   10,
-  20,
-  20,
-  20,
-  20,
-  20,
-  30,
-  30,
-  30,
-  30,
-  30,
-  40,
-  40,
-  40,
-  40,
-  40,
-  50
+  10,
+  15,
+  15,
+  15,
+  15,
+  15,
+  20
 ];
 
-export default async function Plot({ id }: { id: number; }) {
-  const user = await getCurrentUser();
-  const plot = await prisma.gardenPlot.findUnique({ where: { userId: user?.id, id: Number(id) } });
-  const fungi = (await prisma.fungus.findMany({ where: { userId: user?.id, gardenPlotId: plot?.id } })).map(f => getFungus(f.fungusId));
-  if (!user || !plot) return;
+export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level, growthMediums }: { growthMediums: Item[], gardenPlotId: number, availableFungi: Fungus[], plantedFungi: Fungus[], level: number; }) {
+  const [plantingSpace, setPlantingSpaceSpace] = useState(0);
+  const plotSize = plotSizeByLevel[level - 1];
+  const emptySpaceCount = plotSize - plantedFungi.length;
 
-  const plotSize = plotSizeByLevel[user.level - 1];
-  const emptySpaceCount = plotSize - fungi.length;
+  const pickForSpace = (space: number) => {
+    if (space === plantingSpace) setPlantingSpaceSpace(0);
+    else setPlantingSpaceSpace(space);
+  };
 
   const emptySpaces = [];
   for (let i = 0; i < emptySpaceCount; i++) {
     emptySpaces.push(
-      <div className={styles.emptySpace}>Empty Plot</div>
+      <div className={styles.emptySpace} key={i} onClick={() => pickForSpace(i + 1)}>
+        Empty Space
+      </div>
     );
   }
 
+  const fungusPicker = plantingSpace !== 0 ? (
+    <>
+      {growthMediums.length && availableFungi.length ? (
+        <div>
+          <p>Pick growth medium:</p>
+          <div className={styles.picker}>
+            {growthMediums.map((m, i) => (
+              <ItemCard key={i} item={m} />
+            ))}
+          </div>
+          <p>Pick fungus spores to seed:</p>
+          <div className={styles.picker}>
+            {availableFungi.map((f, i) => (
+              <FungusCard key={i} fungus={f} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div>
+          No growth mediums and/or fungi available
+        </div>
+      )}
+    </>
+  ) : ``;
+
   return (
     <div>
-      <h1>Plot: {plot.id}</h1>
+      <h1>Plot {gardenPlotId}</h1>
+
+      {fungusPicker}
+
       <div className={styles.plot}>
-        {fungi.map((f, i) => <div key={i}><FungusCard fungus={f} /></div>)}
+        {plantedFungi.map((f, i) => <div key={i}><FungusCard fungus={f} /></div>)}
         {emptySpaces}
       </div>
     </div>

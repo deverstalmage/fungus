@@ -32,6 +32,9 @@ const userData: Prisma.UserCreateInput[] = [
         {
           itemId: 1,
         },
+        {
+          itemId: 5,
+        }
       ],
     },
     gardenPlots: {

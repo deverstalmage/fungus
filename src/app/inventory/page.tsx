@@ -5,18 +5,21 @@ import { getFungus } from "@/db/fungi";
 import ItemCard from "@/app/item-card";
 import FungusCard from '@/app/fungus-card';
 import styles from './page.module.css';
-import Link from "next/link";
 
 export default async function Inventory() {
   const currentUser = await getCurrentUser();
-  const userClause = {
+
+  const items = (await prisma.item.findMany({
     where: {
       userId: currentUser?.id,
     }
-  };
-
-  const items = (await prisma.item.findMany(userClause)).map(i => getItem(i.itemId));
-  const fungi = (await prisma.fungus.findMany(userClause)).map(i => getFungus(i.fungusId));
+  })).map(i => getItem(i.itemId));
+  const fungi = (await prisma.fungus.findMany({
+    where: {
+      userId: currentUser?.id,
+      gardenPlotId: null,
+    }
+  })).map(i => getFungus(i.fungusId));
 
   return (
     <div>
