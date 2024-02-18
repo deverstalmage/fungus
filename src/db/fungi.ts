@@ -5,9 +5,11 @@ export const Types: Array<FungusType> = ['Mushroom', 'Morel', 'Truffle', 'Toadst
 
 export type Fungus = {
     id: number;
+    uid?: number;
     name: string;
     rarity: Rarity;
     type: FungusType;
+    spaceIndex?: number;
 };
 
 export type FungusDB = {

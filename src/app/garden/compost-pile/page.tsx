@@ -1,5 +1,4 @@
 import { DateTime } from 'luxon';
-import Link from 'next/link';
 import { hasPassed, timeUntil } from '@/lib/time';
 import TurnButton from './turn-button';
 import { turnInvervalDur } from './intervals';

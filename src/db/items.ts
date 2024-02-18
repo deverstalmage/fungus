@@ -4,6 +4,7 @@ type ItemType = 'Fertilizer' | 'Growth Medium' | 'Foraging Supplies';
 
 export type Item = {
   id: number;
+  uid?: number;
   name: string;
   type: ItemType;
   rarity: Rarity;

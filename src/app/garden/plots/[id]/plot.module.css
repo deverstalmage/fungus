@@ -16,8 +16,16 @@
   position: relative;
 }
 
+.selectedEmptySpace {
+  border-color: var(--text);
+}
+
 .plot,
 .picker {
   display: flex;
   flex-wrap: wrap;
+}
+
+.plotWrapper {
+  max-width: 100%;
 }

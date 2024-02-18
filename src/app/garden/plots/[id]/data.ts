@@ -9,8 +9,8 @@ export default async function getPageData(plotId: number) {
   const fungi = (await prisma.fungus.findMany({ where: { userId: user?.id } }));
   const growthMediums = (await prisma.item.findMany({ where: { userId: user?.id } })).map(i => getItem(i.itemId)).filter(i => i.type === 'Growth Medium');
 
-  const plantedFungi = fungi.filter(f => f.gardenPlotId === plot?.id).map(f => getFungus(f.fungusId));
-  const availableFungi = fungi.filter(f => !f.gardenPlotId).map(f => getFungus(f.fungusId));
+  const plantedFungi = fungi.filter(f => f.gardenPlotId === plot?.id).map(f => ({ uid: f.id, spaceIndex: f.spaceIndex, ...getFungus(f.fungusId) }));
+  const availableFungi = fungi.filter(f => !f.gardenPlotId).map(f => ({ uid: f.id, ...getFungus(f.fungusId) }));
 
   if (!user || !plot) throw new Error();
 

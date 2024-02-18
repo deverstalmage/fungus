@@ -1,5 +1,6 @@
 .itemList {
   display: flex;
+  overflow-y: scroll;
 }
 
 .itemSlot {

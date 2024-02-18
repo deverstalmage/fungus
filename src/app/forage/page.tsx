@@ -15,7 +15,7 @@ export default async function Forage() {
       <CardSelector items={items} />
 
 
-      <p><ForageButton /></p>
+      <div><ForageButton /></div>
 
 
       <p><Link href="/">Return home</Link></p>
