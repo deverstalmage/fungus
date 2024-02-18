@@ -4,7 +4,7 @@ import styles from './plot.module.css';
 import FungusCard from "@/app/fungus-card";
 import { useState } from "react";
 import { Item } from "@/db/items";
-import ItemCard from "@/app/item-card";
+import CardSelector from "@/app/card-selector";
 
 const plotSizeByLevel = [
   3,
@@ -53,17 +53,17 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
       {growthMediums.length && availableFungi.length ? (
         <div>
           <p>Pick growth medium:</p>
-          <div className={styles.picker}>
-            {growthMediums.map((m, i) => (
-              <ItemCard key={i} item={m} />
-            ))}
-          </div>
+
+          <CardSelector items={growthMediums} />
+
           <p>Pick fungus spores to seed:</p>
-          <div className={styles.picker}>
+
+          <CardSelector items={availableFungi} radio={true} />
+          {/* <div className={styles.picker}>
             {availableFungi.map((f, i) => (
               <FungusCard key={i} fungus={f} />
             ))}
-          </div>
+          </div> */}
         </div>
       ) : (
         <div>

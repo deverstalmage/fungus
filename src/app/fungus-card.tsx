@@ -3,7 +3,7 @@ import { Fungus } from '@/db/fungi';
 import Image from 'next/image';
 import RarityDisplay from './rarity-display';
 
-export default function Fungus({ fungus }: { fungus: Fungus; }) {
+export default function FungusCard({ fungus }: { fungus: Fungus; }) {
   return (
     <div className={styles.card}>
       <div className={styles.type}>{fungus.type}</div>

@@ -14,6 +14,10 @@ export type FungusDB = {
     [F in FungusType]: Fungus[];
 };
 
+export function isFungus(obj: any): obj is Fungus {
+    return obj.type && Types.includes(obj.type);
+}
+
 const Mushrooms: Array<Fungus> = [
     { id: 1, name: 'Red with White Spots', rarity: 'Common', type: 'Mushroom' as FungusType },
     { id: 2, name: 'Yellow with White Spots', rarity: 'Uncommon', type: 'Mushroom' as FungusType },

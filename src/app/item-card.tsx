@@ -4,10 +4,15 @@ import Image from 'next/image';
 import RarityDisplay from './rarity-display';
 import Link from 'next/link';
 
-export default function Item({ item }: { item: Item; }) {
+const Wrapper = ({ linked, item, children, onClick }: { linked: boolean, item: Item, children: React.ReactNode; onClick?: (item: Item) => void; }) =>
+  linked ?
+    <Link href={`/inventory/${item.id}`}>{children}</Link> :
+    <div onClick={() => onClick && onClick(item)}>{children}</div>;
+
+export default function Item({ item, linked = false, onClick }: { linked?: boolean; item: Item; onClick?: () => Item; }) {
   return (
     <>
-      <Link href={`/inventory/${item.id}`}>
+      <Wrapper linked={linked} item={item} onClick={onClick}>
         <div className={styles.card}>
           <div className={styles.type}>Consumable</div>
           <div className={styles.imgFrame}>
@@ -16,7 +21,7 @@ export default function Item({ item }: { item: Item; }) {
           <p>{item.name}</p>
           <RarityDisplay rarity={item.rarity} />
         </div>
-      </Link>
+      </Wrapper>
     </>
   );
 }
