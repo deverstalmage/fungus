@@ -8,6 +8,12 @@ import CardSelector from "@/app/card-selector";
 import seed from './seed';
 import { toast } from "react-toastify";
 import { useRouter } from 'next/navigation';
+import { DateTime } from 'luxon';
+import { hasPassed } from '@/lib/time';
+import Countdown from "@/app/countdown";
+
+export const intervalMilli = 1000 * 60 * 5; // 5 minutes
+export const invervalDur = { milliseconds: intervalMilli };
 
 const plotSizeByLevel = [
   3,
@@ -38,20 +44,37 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
   const [selectedGrowthMedium, setSelectedGrowthMedium] = useState<Item | Fungus | null>(null);
   const [selectedFungus, setSelectedFungus] = useState<Item | Fungus | null>(null);
   const plotSize = plotSizeByLevel[level - 1];
-  const emptySpaceCount = plotSize - plantedFungi.length;
 
   const pickForSpace = (space: number) => {
     if (space === plantingSpace) setPlantingSpace(0);
     else setPlantingSpace(space);
   };
 
-  const emptySpaces = [];
-  for (let i = 0; i < emptySpaceCount; i++) {
-    emptySpaces.push(
-      <div className={`${styles.emptySpace} ${plantingSpace - 1 === i && styles.selectedEmptySpace}`} key={i} onClick={() => pickForSpace(i + 1)}>
-        Empty Space
-      </div>
-    );
+  const spaces = [];
+  const occupiedSpaces = plantedFungi.map(f => f.spaceIndex);
+  for (let i = 1; i <= plotSize; i++) {
+    if (occupiedSpaces.includes(i)) {
+      const f = plantedFungi.filter(fn => fn.spaceIndex === i)[0];
+
+      const lastTurned = Number(f.lastHarvested);
+      const lastTurnedDateTime = DateTime.fromMillis(lastTurned);
+      const nextTurn = lastTurnedDateTime.plus(invervalDur).toISO();
+      const canHarvest = hasPassed(lastTurnedDateTime.plus(invervalDur));
+
+      spaces.push(
+        <div key={i}>
+          <FungusCard fungus={f} />
+          <p>Last harvested {lastTurnedDateTime.toRelative({ unit: ['hours', 'minutes', 'seconds'] })}</p>
+          <p>Harvest in <Countdown date={nextTurn || DateTime.now().toISO()} /></p>
+        </div>
+      );
+    } else {
+      spaces.push(
+        <div className={`${styles.emptySpace} ${plantingSpace - 1 === i && styles.selectedEmptySpace}`} key={i} onClick={() => pickForSpace(i + 1)}>
+          Empty Space
+        </div>
+      );
+    }
   }
 
   const withToast = async () => {
@@ -59,16 +82,17 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
     const fungusUid = selectedFungus?.uid;
     if (!itemUid || !fungusUid) return;
 
-    const success = await seed(itemUid, fungusUid);
+    const success = await seed(itemUid, fungusUid, gardenPlotId, plantingSpace);
     if (!success) return;
 
-    toast(() => (<p>Seeded {selectedGrowthMedium.name} with {selectedFungus.name} spores in space {plantingSpace}</p>), {
+    toast(() => <p>Seeded {selectedGrowthMedium.name} with {selectedFungus.name} spores in space {plantingSpace}</p>, {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: true,
       pauseOnHover: true,
       theme: "light",
     });
+
     router.refresh();
   };
 
@@ -103,11 +127,7 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
       {fungusPicker}
 
       <div className={styles.plot}>
-        {plantedFungi.sort((a, b) => {
-          if (a.spaceIndex && b.spaceIndex) return a.spaceIndex - b.spaceIndex;
-          return 0;
-        }).map((f, i) => <div key={i}><FungusCard fungus={f} /></div>)}
-        {emptySpaces}
+        {spaces}
       </div>
     </div>
   );

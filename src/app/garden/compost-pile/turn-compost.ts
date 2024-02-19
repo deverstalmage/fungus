@@ -6,12 +6,13 @@ import { getItem } from '@/db/items';
 import prisma from '@/lib/prisma';
 import { obtainItem, randomItem } from '@/lib/inventory';
 import { turnInvervalDur } from './intervals';
+import getCurrentUser from '@/lib/user';
 
 const dropTable = [getItem(1), getItem(2), getItem(3)];
 const dropFrequency = { 1: 1, 2: 0.25, 3: 0.01 };
 
 export default async function turnCompost() {
-  const user = await prisma.user.findUnique({ where: { id: 1 } });
+  const user = await getCurrentUser();
   if (!user) return;
 
   const lastTurned = Number(user?.lastTurnedCompost);

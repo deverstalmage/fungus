@@ -10,6 +10,7 @@ export type Fungus = {
     rarity: Rarity;
     type: FungusType;
     spaceIndex?: number;
+    lastHarvested?: number;
 };
 
 export type FungusDB = {

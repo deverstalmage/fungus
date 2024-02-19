@@ -35,11 +35,12 @@ model GardenPlot {
 }
 
 model Fungus {
-  id           Int         @id @default(autoincrement())
-  fungusId     Int
-  userId       Int
-  gardenPlotId Int?
-  spaceIndex   Int?
-  gardenPlot   GardenPlot? @relation(fields: [gardenPlotId], references: [id])
-  user         User        @relation(fields: [userId], references: [id])
+  id            Int         @id @default(autoincrement())
+  fungusId      Int
+  userId        Int
+  gardenPlotId  Int?
+  spaceIndex    Int?
+  lastHarvested BigInt      @default(0)
+  gardenPlot    GardenPlot? @relation(fields: [gardenPlotId], references: [id])
+  user          User        @relation(fields: [userId], references: [id])
 }
