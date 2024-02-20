@@ -17,7 +17,7 @@ export default async function CompostPile() {
   return (
     <main>
       <h1>Compost Pile</h1>
-      <p>Compost was last turned {lastTurnedDateTime.toRelative({ unit: ['hours', 'minutes', 'seconds'] })}</p>
+      {/* <p>Compost was last turned {lastTurnedDateTime.toRelative({ unit: ['hours', 'minutes', 'seconds'] })}</p> */}
       <p>Turn the leaves again <Countdown date={nextTurn || DateTime.now().toISO()} /></p>
       <TurnButton canTurn={canTurn} />
     </main>

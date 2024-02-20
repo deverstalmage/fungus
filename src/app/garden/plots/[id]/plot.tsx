@@ -6,10 +6,8 @@ import { useState } from "react";
 import { Item, SubstrateItem, getItem } from "@/db/items";
 import CardSelector from "@/app/card-selector";
 import seed from './seed';
-import { toast } from "react-toastify";
 import { useRouter } from 'next/navigation';
 import { DateTime } from 'luxon';
-import { hasPassed } from '@/lib/time';
 import Countdown from "@/app/countdown";
 import harvest from "./harvest";
 import notify from "@/lib/notify";
@@ -43,7 +41,7 @@ const plotSizeByLevel = [
 type SubstrateState = SubstrateItem | null;
 type FungusState = CombinedFungus | null;
 
-export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level, growthMediums }: { growthMediums: Item[], gardenPlotId: number, availableFungi: CombinedFungus[], plantedFungi: CombinedFungus[], level: number; }) {
+export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level, growthMediums, now }: { growthMediums: Item[], gardenPlotId: number, availableFungi: CombinedFungus[], plantedFungi: CombinedFungus[], level: number; now: number; }) {
   const router = useRouter();
   const [plantingSpace, setPlantingSpace] = useState(0);
   const [selectedGrowthMedium, setSelectedGrowthMedium] = useState<SubstrateState>(null);
@@ -63,10 +61,9 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
 
       const lastHarvested = Number(f.lastHarvested);
       const lastHarvestedDateTime = DateTime.fromMillis(lastHarvested);
-      console.log(f);
       const substrate = getItem(f.growthMediumItemId as number) as SubstrateItem;
       const timeToHarvest = f.msToHarvest * substrate.harvestTimeMultiplier;
-      const canHarvest = hasPassed(lastHarvestedDateTime.plus({ milliseconds: timeToHarvest }));
+      const canHarvest = lastHarvestedDateTime.plus({ milliseconds: timeToHarvest }) <= DateTime.fromMillis(now);
       const nextHarvest = lastHarvestedDateTime.plus({ milliseconds: timeToHarvest }).toISO();
 
       const harvestAction = async () => {
@@ -76,13 +73,13 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
         } else {
           notify(<p>Error harvesting</p>);
         }
+        router.refresh();
       };
 
       spaces.push(
         <div key={i}>
           <FungusCard fungus={f} />
-          <p>Last harvested {lastHarvestedDateTime.toRelative({ unit: ['hours', 'minutes', 'seconds'] })}</p>
-          <p>Harvest in <Countdown date={nextHarvest || DateTime.now().toISO()} /></p>
+          <p>Harvest <Countdown date={nextHarvest || DateTime.now().toISO()} /></p>
           <form action={harvestAction}>
             <button type="submit" disabled={!canHarvest}>Harvest</button>
           </form>
@@ -90,7 +87,7 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
       );
     } else {
       spaces.push(
-        <div className={`${styles.emptySpace} ${plantingSpace - 1 === i && styles.selectedEmptySpace}`} key={i} onClick={() => pickForSpace(i + 1)}>
+        <div className={`${styles.emptySpace} ${plantingSpace === i && styles.selectedEmptySpace}`} key={i} onClick={() => pickForSpace(i)}>
           Empty Space
         </div>
       );

@@ -17,28 +17,24 @@ export default async function harvest(fungusId: number) {
   const lastHarvestedDateTime = DateTime.fromMillis(lastHarvested);
   const timeToHarvest = fungus.msToHarvest * substrate.harvestTimeMultiplier;
 
-  console.log(lastHarvested, timeToHarvest);
-
   if (hasPassed(lastHarvestedDateTime.plus({ milliseconds: timeToHarvest }))) {
 
     const currentFruit = user.fruit;
     const newFruit = fungus.yield * substrate.harvestYieldMultiplier;
 
-    const results = await Promise.all([
-      prisma.fungus.update({
-        where: { id: fungus.uid },
-        data: {
-          lastHarvested: DateTime.now().valueOf()
-        }
-      }),
+    await prisma.fungus.update({
+      where: { id: fungus.uid },
+      data: {
+        lastHarvested: DateTime.now().valueOf()
+      }
+    });
 
-      prisma.user.update({
-        where: { id: user.id },
-        data: {
-          fruit: currentFruit + newFruit,
-        },
-      })
-    ]);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        fruit: currentFruit + newFruit,
+      },
+    });
 
     return newFruit;
   } else {
