@@ -9,17 +9,20 @@ import styles from './page.module.css';
 export default async function Inventory() {
   const currentUser = await getCurrentUser();
 
-  const items = (await prisma.item.findMany({
-    where: {
-      userId: currentUser?.id,
-    }
-  })).map(i => getItem(i.itemId));
-  const fungi = (await prisma.fungus.findMany({
-    where: {
-      userId: currentUser?.id,
-      gardenPlotId: null,
-    }
-  })).map(i => getFungus(i.fungusId));
+  // const items = (await prisma.item.findMany({
+  //   where: {
+  //     userId: currentUser?.id,
+  //   }
+  // })).map(i => getItem(i.itemId));
+  // const fungi = (await prisma.fungus.findMany({
+  //   where: {
+  //     userId: currentUser?.id,
+  //     gardenPlotId: null,
+  //   }
+  // })).map(i => getFungus(i.fungusId));
+
+  const items = [];
+  const fungi = [];
 
   return (
     <div>

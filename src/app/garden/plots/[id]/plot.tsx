@@ -102,6 +102,8 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
     const success = await seed(itemUid, fungusUid, gardenPlotId, plantingSpace);
     if (!success) return;
 
+    setPlantingSpace(0);
+
     notify(<p>Seeded {selectedGrowthMedium.name} with {selectedFungus.name} spores in space {plantingSpace}</p>);
 
     router.refresh();
