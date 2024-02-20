@@ -23,11 +23,11 @@ export type DbFungus = {
 
 export type CombinedFungus = StaticFungus & DbFungus & { uid: number; };
 
-export type Fungus = StaticFungus | DbFungus & {
+export type Fungus = CombinedFungus | StaticFungus | DbFungus & {
     name: string;
     rarity: Rarity;
     type: FungusType;
-} | CombinedFungus;
+};
 
 export type FungusDB = {
     [F in FungusType]: Fungus[];
@@ -101,6 +101,10 @@ const FungusLibrary = [
 
 export function getFungus(id: number): StaticFungus {
     return FungusLibrary.filter(i => i.id === id)[0];
+}
+
+export function combineFungusRecord(r: DbFungus): CombinedFungus {
+    return { uid: r.id, lastHarvested: r.lastHarvested, spaceIndex: r.spaceIndex, growthMediumItemId: r.growthMediumItemId, fungusId: r.fungusId, ...getFungus(r.fungusId) };
 }
 
 export default F;

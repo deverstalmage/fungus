@@ -4,16 +4,18 @@ import getCurrentUser from "@/lib/user";
 import { toast } from "react-toastify";
 import GetItem from '@/app/get-item';
 import { Rarity, roll } from "./rarity";
+import notify from "./notify";
 
 export async function alertItem(items: Item[]) {
   for (const item of items) {
-    toast(() => GetItem({ item }), {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: true,
-      pauseOnHover: true,
-      theme: "light",
-    });
+    notify(GetItem({ item }));
+    // toast(() => GetItem({ item }), {
+    //   position: "top-right",
+    //   autoClose: 5000,
+    //   hideProgressBar: true,
+    //   pauseOnHover: true,
+    //   theme: "light",
+    // });
   }
 }
 

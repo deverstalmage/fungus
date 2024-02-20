@@ -6,6 +6,7 @@ export type Item = BaseItem | SubstrateItem | FertilizerItem;
 
 export type BaseItem = {
   id: number;
+  uid?: number;
   name: string;
   type: ItemType;
   rarity: Rarity;

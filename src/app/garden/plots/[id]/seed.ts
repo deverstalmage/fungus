@@ -16,6 +16,7 @@ export default async function seed(itemUid: number, fungusUid: number, plotId: n
           gardenPlotId: plotId,
           spaceIndex: space,
           lastHarvested: DateTime.now().valueOf(),
+          growthMediumItemId: item.itemId,
         }
       });
       // await prisma.item.delete({ where: { id: itemUid } });

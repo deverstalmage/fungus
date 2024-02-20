@@ -1,9 +1,9 @@
 'use client';
-import { Fungus } from "@/db/fungi";
+import { CombinedFungus, Fungus } from "@/db/fungi";
 import styles from './plot.module.css';
 import FungusCard from "@/app/fungus-card";
 import { useState } from "react";
-import { Item } from "@/db/items";
+import { Item, SubstrateItem, getItem } from "@/db/items";
 import CardSelector from "@/app/card-selector";
 import seed from './seed';
 import { toast } from "react-toastify";
@@ -11,6 +11,8 @@ import { useRouter } from 'next/navigation';
 import { DateTime } from 'luxon';
 import { hasPassed } from '@/lib/time';
 import Countdown from "@/app/countdown";
+import harvest from "./harvest";
+import notify from "@/lib/notify";
 
 export const intervalMilli = 1000 * 60 * 5; // 5 minutes
 export const invervalDur = { milliseconds: intervalMilli };
@@ -38,11 +40,14 @@ const plotSizeByLevel = [
   20
 ];
 
-export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level, growthMediums }: { growthMediums: Item[], gardenPlotId: number, availableFungi: Fungus[], plantedFungi: Fungus[], level: number; }) {
+type SubstrateState = SubstrateItem | null;
+type FungusState = CombinedFungus | null;
+
+export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level, growthMediums }: { growthMediums: Item[], gardenPlotId: number, availableFungi: CombinedFungus[], plantedFungi: CombinedFungus[], level: number; }) {
   const router = useRouter();
   const [plantingSpace, setPlantingSpace] = useState(0);
-  const [selectedGrowthMedium, setSelectedGrowthMedium] = useState<Item | Fungus | null>(null);
-  const [selectedFungus, setSelectedFungus] = useState<Item | Fungus | null>(null);
+  const [selectedGrowthMedium, setSelectedGrowthMedium] = useState<SubstrateState>(null);
+  const [selectedFungus, setSelectedFungus] = useState<FungusState>(null);
   const plotSize = plotSizeByLevel[level - 1];
 
   const pickForSpace = (space: number) => {
@@ -56,16 +61,31 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
     if (occupiedSpaces.includes(i)) {
       const f = plantedFungi.filter(fn => fn.spaceIndex === i)[0];
 
-      const lastTurned = Number(f.lastHarvested);
-      const lastTurnedDateTime = DateTime.fromMillis(lastTurned);
-      const nextTurn = lastTurnedDateTime.plus(invervalDur).toISO();
-      const canHarvest = hasPassed(lastTurnedDateTime.plus(invervalDur));
+      const lastHarvested = Number(f.lastHarvested);
+      const lastHarvestedDateTime = DateTime.fromMillis(lastHarvested);
+      console.log(f);
+      const substrate = getItem(f.growthMediumItemId as number) as SubstrateItem;
+      const timeToHarvest = f.msToHarvest * substrate.harvestTimeMultiplier;
+      const canHarvest = hasPassed(lastHarvestedDateTime.plus({ milliseconds: timeToHarvest }));
+      const nextHarvest = lastHarvestedDateTime.plus({ milliseconds: timeToHarvest }).toISO();
+
+      const harvestAction = async () => {
+        const result = await harvest(f.uid);
+        if (result) {
+          notify(<p>Successfully harvested {result} fruit!</p>);
+        } else {
+          notify(<p>Error harvesting</p>);
+        }
+      };
 
       spaces.push(
         <div key={i}>
           <FungusCard fungus={f} />
-          <p>Last harvested {lastTurnedDateTime.toRelative({ unit: ['hours', 'minutes', 'seconds'] })}</p>
-          <p>Harvest in <Countdown date={nextTurn || DateTime.now().toISO()} /></p>
+          <p>Last harvested {lastHarvestedDateTime.toRelative({ unit: ['hours', 'minutes', 'seconds'] })}</p>
+          <p>Harvest in <Countdown date={nextHarvest || DateTime.now().toISO()} /></p>
+          <form action={harvestAction}>
+            <button type="submit" disabled={!canHarvest}>Harvest</button>
+          </form>
         </div>
       );
     } else {
@@ -85,13 +105,7 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
     const success = await seed(itemUid, fungusUid, gardenPlotId, plantingSpace);
     if (!success) return;
 
-    toast(() => <p>Seeded {selectedGrowthMedium.name} with {selectedFungus.name} spores in space {plantingSpace}</p>, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: true,
-      pauseOnHover: true,
-      theme: "light",
-    });
+    notify(<p>Seeded {selectedGrowthMedium.name} with {selectedFungus.name} spores in space {plantingSpace}</p>);
 
     router.refresh();
   };
@@ -101,10 +115,10 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
       {growthMediums.length && availableFungi.length ? (
         <>
           <p>Pick substrate: {selectedGrowthMedium?.name}</p>
-          <CardSelector items={growthMediums} radio={true} onSelect={(item) => setSelectedGrowthMedium(item)} />
+          <CardSelector items={growthMediums} radio={true} onSelect={(item) => setSelectedGrowthMedium(item as SubstrateState)} />
 
           <p>Pick fungus spores to seed: {selectedFungus?.name}</p>
-          <CardSelector items={availableFungi} radio={true} onSelect={(item) => setSelectedFungus(item)} />
+          <CardSelector items={availableFungi} radio={true} onSelect={(item) => setSelectedFungus(item as FungusState)} />
 
           <form action={withToast}>
             <button disabled={!selectedFungus || !selectedGrowthMedium} type="submit">

@@ -4,8 +4,7 @@ import { SubstrateItem, getItem } from "@/db/items";
 import prisma from "@/lib/prisma";
 import getCurrentUser from "@/lib/user";
 import { DateTime } from "luxon";
-import { CombinedFungus, Fungus, getFungus } from '@/db/fungi';
-import combineFungusRecord from '@/lib/fungus-records';
+import { combineFungusRecord } from '@/db/fungi';
 
 export default async function harvest(fungusId: number) {
   const user = await getCurrentUser();
@@ -16,19 +15,33 @@ export default async function harvest(fungusId: number) {
   const substrate = getItem(fRecord.growthMediumItemId) as SubstrateItem;
   const lastHarvested = Number(fungus.lastHarvested);
   const lastHarvestedDateTime = DateTime.fromMillis(lastHarvested);
-
   const timeToHarvest = fungus.msToHarvest * substrate.harvestTimeMultiplier;
+
+  console.log(lastHarvested, timeToHarvest);
 
   if (hasPassed(lastHarvestedDateTime.plus({ milliseconds: timeToHarvest }))) {
 
     const currentFruit = user.fruit;
     const newFruit = fungus.yield * substrate.harvestYieldMultiplier;
 
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        fruit: currentFruit + newFruit,
-      },
-    });
+    const results = await Promise.all([
+      prisma.fungus.update({
+        where: { id: fungus.uid },
+        data: {
+          lastHarvested: DateTime.now().valueOf()
+        }
+      }),
+
+      prisma.user.update({
+        where: { id: user.id },
+        data: {
+          fruit: currentFruit + newFruit,
+        },
+      })
+    ]);
+
+    return newFruit;
+  } else {
+    return false;
   }
 }
