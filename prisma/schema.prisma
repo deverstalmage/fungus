@@ -13,6 +13,7 @@ model User {
   level             Int          @default(1)
   lastTurnedCompost BigInt       @default(0)
   energy            Int          @default(100)
+  fruit             Int          @default(0)
   fungi             Fungus[]
   gardenPlots       GardenPlot[]
   items             Item[]
@@ -35,12 +36,13 @@ model GardenPlot {
 }
 
 model Fungus {
-  id            Int         @id @default(autoincrement())
-  fungusId      Int
-  userId        Int
-  gardenPlotId  Int?
-  spaceIndex    Int?
-  lastHarvested BigInt      @default(0)
-  gardenPlot    GardenPlot? @relation(fields: [gardenPlotId], references: [id])
-  user          User        @relation(fields: [userId], references: [id])
+  id                 Int         @id @default(autoincrement())
+  fungusId           Int
+  userId             Int
+  gardenPlotId       Int?
+  spaceIndex         Int?
+  growthMediumItemId Int?
+  lastHarvested      BigInt      @default(0)
+  gardenPlot         GardenPlot? @relation(fields: [gardenPlotId], references: [id])
+  user               User        @relation(fields: [userId], references: [id])
 }

@@ -10,7 +10,7 @@ export default async function seed(itemUid: number, fungusUid: number, plotId: n
 
   if (user && fungus && item) {
     try {
-      await prisma.fungus.update({
+      const f = await prisma.fungus.update({
         where: { id: fungusUid },
         data: {
           gardenPlotId: plotId,
@@ -19,7 +19,7 @@ export default async function seed(itemUid: number, fungusUid: number, plotId: n
         }
       });
       // await prisma.item.delete({ where: { id: itemUid } });
-      return true;
+      return f;
     } catch (e) {
       return false;
     }

@@ -100,7 +100,7 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
     <>
       {growthMediums.length && availableFungi.length ? (
         <>
-          <p>Pick growth medium: {selectedGrowthMedium?.name}</p>
+          <p>Pick substrate: {selectedGrowthMedium?.name}</p>
           <CardSelector items={growthMediums} radio={true} onSelect={(item) => setSelectedGrowthMedium(item)} />
 
           <p>Pick fungus spores to seed: {selectedFungus?.name}</p>
@@ -114,7 +114,7 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
         </>
       ) : (
         <div>
-          No growth mediums and/or fungi available
+          No growth media and/or fungi available
         </div>
       )}
     </>
