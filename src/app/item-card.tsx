@@ -4,12 +4,12 @@ import Image from 'next/image';
 import RarityDisplay from './rarity-display';
 import Link from 'next/link';
 
-const Wrapper = ({ linked = true, item, children, onClick }: { linked: boolean, item: Item, children: React.ReactNode; onClick?: (item: Item) => void; }) =>
-  linked && !onClick ?
+const Wrapper = ({ linked, item, children, onClick }: { linked: boolean, item: Item, children: React.ReactNode; onClick?: (item: Item) => void; }) =>
+  linked ?
     <Link href={`/inventory/${item.id}`}>{children}</Link> :
     <div onClick={() => onClick && onClick(item)}>{children}</div>;
 
-export default function Item({ item, linked = false, onClick }: { linked?: boolean; item: Item; onClick?: () => Item; }) {
+export default function Item({ item, linked = true, onClick }: { linked?: boolean; item: Item; onClick?: () => Item; }) {
   return (
     <>
       <Wrapper linked={linked} item={item} onClick={onClick}>
