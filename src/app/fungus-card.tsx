@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 const Wrapper = ({ linked, fungus, children, onClick }: { linked: boolean, fungus: Fungus, children: React.ReactNode; onClick?: (item: Fungus) => void; }) =>
   linked ?
-    <Link href={`/inventory/${fungus.id}`}>{children}</Link> :
+    <Link href={`/spores/${fungus.id}`}>{children}</Link> :
     <div onClick={() => onClick && onClick(fungus)}>{children}</div>;
 
 export default function FungusCard({ fungus, linked = true, onClick }: { linked?: boolean; onClick?: () => Fungus; fungus: Fungus; }) {

@@ -2,14 +2,16 @@
 import { DateTime } from 'luxon';
 import { useState } from 'react';
 import useInterval from '@/hooks/use-interval';
-import { timeUntil } from '@/lib/time';
+import { timeUntil, msUntil } from '@/lib/time';
 
 
-export default function Countdown({ date = DateTime.now().toISO() }: { date: string; }) {
+export default function Countdown({ date = DateTime.now().toISO(), tick = () => { } }: { date: string; tick?: (n: number) => void; }) {
   const [dateDisplay, setCount] = useState(timeUntil(DateTime.fromISO(date)));
+  const dt = DateTime.fromISO(date);
 
   useInterval(() => {
-    setCount(timeUntil(DateTime.fromISO(date)));
+    setCount(timeUntil(dt));
+    tick(msUntil(dt));
   }, 1000);
 
   return <span suppressHydrationWarning>{dateDisplay}</span>;

@@ -43,7 +43,8 @@ export default async function RootLayout({
           <div><Link href={'/'}>Home</Link> | <Link href="/garden">Garden</Link> | <Link href="/inventory">Inventory</Link></div>
           <div className={styles.hud}>
             <div>Energy: [ {user.energy || 0} / 100 ]</div>
-            <div>Resources / Currency: {user.fruit || 0}</div>
+            <div>Fruit: {user.fruit || 0}</div>
+            <div>Gold: {user.gold || 0}</div>
           </div>
           {children}
           {modal}

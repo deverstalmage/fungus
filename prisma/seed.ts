@@ -5,6 +5,8 @@ const prisma = new PrismaClient();
 const userData: Prisma.UserCreateInput[] = [
   {
     name: 'Devers',
+    gold: 1000,
+    fruit: 10000,
     fungi: {
       create: [
         {
@@ -34,7 +36,16 @@ const userData: Prisma.UserCreateInput[] = [
         },
         {
           itemId: 5,
-        }
+        },
+        {
+          itemId: 4,
+        },
+        {
+          itemId: 4,
+        },
+        {
+          itemId: 1000001,
+        },
       ],
     },
     gardenPlots: {

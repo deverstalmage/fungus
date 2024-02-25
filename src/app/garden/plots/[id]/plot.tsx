@@ -1,5 +1,5 @@
 'use client';
-import { CombinedFungus, Fungus } from "@/db/fungi";
+import { CombinedFungus, Fungus, getFungus } from "@/db/fungi";
 import styles from './plot.module.css';
 import FungusCard from "@/app/fungus-card";
 import { useState } from "react";
@@ -10,7 +10,9 @@ import { useRouter } from 'next/navigation';
 import { DateTime } from 'luxon';
 import Countdown from "@/app/countdown";
 import harvest from "./harvest";
+import remove from "./remove";
 import notify from "@/lib/notify";
+import Modal from "@/app/modal";
 
 export const intervalMilli = 1000 * 60 * 5; // 5 minutes
 export const invervalDur = { milliseconds: intervalMilli };
@@ -41,12 +43,17 @@ const plotSizeByLevel = [
 type SubstrateState = SubstrateItem | null;
 type FungusState = CombinedFungus | null;
 
-export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level, growthMediums, now }: { growthMediums: Item[], gardenPlotId: number, availableFungi: CombinedFungus[], plantedFungi: CombinedFungus[], level: number; now: number; }) {
+export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level, inventory, now }: { inventory: Item[], gardenPlotId: number, availableFungi: CombinedFungus[], plantedFungi: CombinedFungus[], level: number; now: number; }) {
   const router = useRouter();
+  const [showConfirm, setShowConfirm] = useState(false);
   const [plantingSpace, setPlantingSpace] = useState(0);
   const [selectedGrowthMedium, setSelectedGrowthMedium] = useState<SubstrateState>(null);
   const [selectedFungus, setSelectedFungus] = useState<FungusState>(null);
+  const [selectedPlantedFungus, setSelectedPlantedFungus] = useState<FungusState>(null);
+
   const plotSize = plotSizeByLevel[level - 1];
+  const growthMediums = inventory.filter(i => i.type === 'Substrate');
+  const sportCollectionKits = inventory.filter(i => i.id === 4);
 
   const pickForSpace = (space: number) => {
     if (space === plantingSpace) setPlantingSpace(0);
@@ -66,6 +73,10 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
       const canHarvest = lastHarvestedDateTime.plus({ milliseconds: timeToHarvest }) <= DateTime.fromMillis(now);
       const nextHarvest = lastHarvestedDateTime.plus({ milliseconds: timeToHarvest }).toISO();
 
+      const tick = (n: number) => {
+        // if (n <= 0) setPlantingSpace(plantingSpace);
+      };
+
       const harvestAction = async () => {
         const result = await harvest(f.uid);
         if (result) {
@@ -76,18 +87,54 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
         router.refresh();
       };
 
+      const hasKit = sportCollectionKits.length;
+      const selected = selectedPlantedFungus === f;
+
+      const removeWithKit = async (useKit: boolean) => {
+        const result = await remove(f.uid, useKit);
+
+        if (result) {
+
+          setShowConfirm(false);
+          notify(
+            <>
+              <FungusCard fungus={f} />
+              <p>Gathered spores</p>
+            </>
+          );
+        } else {
+          notify(<p>Error removing</p>);
+        }
+
+        router.refresh();
+      };
+
       spaces.push(
-        <div key={i}>
-          <FungusCard fungus={f} />
-          <p>Harvest <Countdown date={nextHarvest || DateTime.now().toISO()} /></p>
-          <form action={harvestAction}>
-            <button type="submit" disabled={!canHarvest}>Harvest</button>
-          </form>
+        <div key={i} className={`${styles.space} ${selected && styles.selected}`} onClick={() => selected ? setSelectedPlantedFungus(null) : setSelectedPlantedFungus(f)}>
+          <FungusCard linked={false} fungus={f} />
+          <p>Harvest <Countdown date={nextHarvest || DateTime.now().toISO()} tick={tick} /></p>
+          {selected && (
+            <div className={styles.actions}>
+              <form action={harvestAction}>
+                <button type="submit" disabled={!canHarvest}>Harvest</button>
+              </form>
+              <button onClick={() => setShowConfirm(true)}>Remove</button>
+            </div>
+          )}
+          {showConfirm && (
+            <Modal onDismiss={() => setShowConfirm(false)}>
+              <p>Would you like to gather spors from the fungus before removing it?</p>
+              <div>
+                <form action={() => removeWithKit(true)}><button type="submit" disabled={!hasKit}>Gather spores and remove (1x Spore Collection Kit)</button></form>
+                <form action={() => removeWithKit(false)}><button type="submit">Remove without gathering</button></form>
+              </div>
+            </Modal>
+          )}
         </div>
       );
     } else {
       spaces.push(
-        <div className={`${styles.emptySpace} ${plantingSpace === i && styles.selectedEmptySpace}`} key={i} onClick={() => pickForSpace(i)}>
+        <div className={`${styles.space} ${styles.emptySpace} ${plantingSpace === i && styles.selected}`} key={i} onClick={() => pickForSpace(i)}>
           Empty Space
         </div>
       );

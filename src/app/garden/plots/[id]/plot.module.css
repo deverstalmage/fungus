@@ -6,18 +6,19 @@
   color: var(--text);
 }
 
-.emptySpace {
-  border: 1px solid black;
-  width: 200px;
-  height: 250px;
+.space {
+  composes: itemSlot from '@/app/card-selector.module.css';
+  /* border: 1px solid black; */
+  min-width: 200px;
+  height: 360px;
   cursor: pointer;
-  margin: 0 10px 10px 0;
-  padding: 10px;
+  /* margin: 0 10px 10px 0; */
+  /* padding: 10px; */
   position: relative;
 }
 
-.selectedEmptySpace {
-  border-color: var(--text);
+.emptySpace {
+  border: 2px solid var(--text);
 }
 
 .plot,
@@ -28,4 +29,17 @@
 
 .plotWrapper {
   max-width: 100%;
+}
+
+.selected {
+  composes: selected from '@/app/card-selector.module.css';
+}
+
+.actions {
+  display: flex;
+  flex-direction: row;
+}
+
+.actions>* {
+  margin-right: 10px;
 }

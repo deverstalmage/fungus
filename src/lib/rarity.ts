@@ -1,4 +1,4 @@
-export type Rarity = 'Common' | 'Uncommon' | 'Rare' | 'Ultra Rare' | 'Secret';
+export type Rarity = 'Common' | 'Uncommon' | 'Rare' | 'Ultra Rare' | 'Secret' | 'Developer';
 export type Grade = 'D' | 'C' | 'B' | 'A' | 'S' | 'Ω';
 
 export type RarityMap = {
@@ -11,6 +11,7 @@ export const rarityStars: { [R in Rarity]: string } = {
   'Rare': `⭐️⭐️⭐️`,
   'Ultra Rare': `⭐️⭐️⭐️⭐️`,
   'Secret': `⭐️⭐️⭐️⭐️⭐️`,
+  'Developer': `💻`,
 };
 
 export function randomNum(min: number, max: number) {
@@ -23,6 +24,7 @@ export const Rarities: RarityMap = {
   Rare: 0.01,
   'Ultra Rare': 0.005,
   Secret: 0.001,
+  Developer: 0,
 };
 
 export function roll(rarities?: Array<Rarity>): Rarity {
@@ -36,7 +38,6 @@ export function roll(rarities?: Array<Rarity>): Rarity {
 
   if (rarities && rarities.length) return rarities[0];
   return 'Common';
-  // return r <= Rarities.Secret && rarities && rarities.includes('Secret') ? 'Secret' : r <= Rarities["Ultra Rare"] ? 'Ultra Rare' : r <= Rarities.Rare ? 'Rare' : r <= Rarities.Uncommon ? 'Uncommon' : 'Common';
 }
 
 export function randomFrequencyTableEntry(table: { [k: string | number]: number; }): number | string | undefined {

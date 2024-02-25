@@ -39,6 +39,7 @@ export const ItemLibrary: Array<Item> = [
 
   { id: 9, name: 'Decomposing Ent Thigh', type: 'Substrate', rarity: 'Rare', harvestYieldMultiplier: 3, harvestTimeMultiplier: 2 },
 
+  { id: 1000001, name: 'Mysterious Substance', type: 'Substrate', rarity: 'Common', harvestYieldMultiplier: 1, harvestTimeMultiplier: 0.05 },
 ];
 
 export function getItem(id: number): Item {

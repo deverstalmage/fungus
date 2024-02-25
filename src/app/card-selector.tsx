@@ -24,7 +24,7 @@ export default function ItemSelector({ items, onSelect, radio, canSelect }: { it
     <div className={styles.itemList}>
       {items.map((item, i) => (
         <div key={i} className={`${styles.itemSlot} ${selectedItems.includes(i) && styles.selected}`} onClick={() => toggleSelectItem(i, item)}>
-          {isFungus(item) ? <FungusCard key={i} fungus={item} /> : <ItemCard key={i} item={item} />}
+          {isFungus(item) ? <FungusCard linked={false} key={i} fungus={item} /> : <ItemCard linked={false} key={i} item={item} />}
         </div>
       ))}
     </div>

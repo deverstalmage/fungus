@@ -10,6 +10,11 @@ const units: Intl.RelativeTimeFormatUnit[] = [
   'second',
 ];
 
+export function msUntil(time: DateTime): number {
+  const diff = time.diffNow().toMillis();
+  return diff;
+}
+
 export function timeUntil(time: DateTime, offset?: DurationLike): string {
   const newTime: DateTime = offset ? time.plus(offset) : time;
   const diff = newTime.diffNow().shiftTo(...units);
