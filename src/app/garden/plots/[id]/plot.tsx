@@ -40,16 +40,16 @@ const plotSizeByLevel = [
   20
 ];
 
-type SubstrateState = SubstrateItem | null;
-type FungusState = CombinedFungus | null;
+type SubstrateState = SubstrateItem | undefined;
+type FungusState = CombinedFungus | undefined;
 
 export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level, inventory, now }: { inventory: Item[], gardenPlotId: number, availableFungi: CombinedFungus[], plantedFungi: CombinedFungus[], level: number; now: number; }) {
   const router = useRouter();
   const [showConfirm, setShowConfirm] = useState(false);
   const [plantingSpace, setPlantingSpace] = useState(0);
-  const [selectedGrowthMedium, setSelectedGrowthMedium] = useState<SubstrateState>(null);
-  const [selectedFungus, setSelectedFungus] = useState<FungusState>(null);
-  const [selectedPlantedFungus, setSelectedPlantedFungus] = useState<FungusState>(null);
+  const [selectedGrowthMedium, setSelectedGrowthMedium] = useState<SubstrateState>();
+  const [selectedFungus, setSelectedFungus] = useState<FungusState>();
+  const [selectedPlantedFungus, setSelectedPlantedFungus] = useState<FungusState>();
 
   const plotSize = plotSizeByLevel[level - 1];
   const growthMediums = inventory.filter(i => i.type === 'Substrate');
@@ -92,9 +92,7 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
 
       const removeWithKit = async (useKit: boolean) => {
         const result = await remove(f.uid, useKit);
-
         if (result) {
-
           setShowConfirm(false);
           notify(
             <>
@@ -110,7 +108,7 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
       };
 
       spaces.push(
-        <div key={i} className={`${styles.space} ${selected && styles.selected}`} onClick={() => selected ? setSelectedPlantedFungus(null) : setSelectedPlantedFungus(f)}>
+        <div key={i} className={`${styles.space} ${selected && styles.selected}`} onClick={() => selected ? setSelectedPlantedFungus(undefined) : setSelectedPlantedFungus(f)}>
           <FungusCard linked={false} fungus={f} />
           <p>Harvest <Countdown date={nextHarvest || DateTime.now().toISO()} tick={tick} /></p>
           {selected && (
@@ -161,10 +159,10 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
       {growthMediums.length && availableFungi.length ? (
         <>
           <p>Pick substrate: {selectedGrowthMedium?.name}</p>
-          <CardSelector items={growthMediums} radio={true} onSelect={(item) => setSelectedGrowthMedium(item as SubstrateState)} />
+          <CardSelector items={growthMediums} radio={true} onSelect={(items) => setSelectedGrowthMedium(items[0] as SubstrateState)} />
 
           <p>Pick fungus spores to seed: {selectedFungus?.name}</p>
-          <CardSelector items={availableFungi} radio={true} onSelect={(item) => setSelectedFungus(item as FungusState)} />
+          <CardSelector items={availableFungi} radio={true} onSelect={(items) => setSelectedFungus(items[0] as FungusState)} />
 
           <form action={withToast}>
             <button disabled={!selectedFungus || !selectedGrowthMedium} type="submit">

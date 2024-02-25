@@ -2,13 +2,13 @@
 import { DateTime } from 'luxon';
 import { randomFrequencyTableEntry } from '@/lib/rarity';
 import { hasPassed } from '@/lib/time';
-import { getItem } from '@/db/items';
+import { ItemLibrary, getItem } from '@/db/items';
 import prisma from '@/lib/prisma';
-import { obtainItem, randomItem } from '@/lib/inventory';
+import { obtainItem, randomThing } from '@/lib/inventory';
 import { turnInvervalDur } from './intervals';
 import getCurrentUser from '@/lib/user';
 
-const dropTable = [getItem(1), getItem(2), getItem(3)];
+const dropTable = ItemLibrary.filter(i => i.type === 'Fertilizer');
 const dropFrequency = { 1: 1, 2: 0.25, 3: 0.01 };
 
 export default async function turnCompost() {
@@ -23,7 +23,7 @@ export default async function turnCompost() {
     const items = [];
     const numDrops = randomFrequencyTableEntry(dropFrequency) as number || 0;
     for (let i = 0; i < numDrops; i++) {
-      const d = randomItem(dropTable);
+      const d = randomThing(dropTable);
       items.push(d);
       await obtainItem(d.id);
     }

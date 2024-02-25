@@ -89,7 +89,7 @@ const F: FungusDB = {
     Lichen: Lichens,
 };
 
-const FungusLibrary = [
+export const FungusLibrary = [
     ...Mushrooms,
     ...Morels,
     ...Truffles,

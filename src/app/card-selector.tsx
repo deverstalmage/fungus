@@ -6,17 +6,17 @@ import ItemCard from "@/app/item-card";
 import { useState } from "react";
 import FungusCard from "./fungus-card";
 
-export default function ItemSelector({ items, onSelect, radio, canSelect }: { items: Item[] | Fungus[]; onSelect?: (item: Item | Fungus | null) => void; canSelect?: (item: Item | Fungus) => boolean; radio?: boolean; }) {
+export default function ItemSelector({ items, onSelect, radio, canSelect }: { items: Item[] | Fungus[]; onSelect?: (items: Array<Item> | Array<Fungus>) => void; canSelect?: (item: Item | Fungus) => boolean; radio?: boolean; }) {
   const [selectedItems, setSelectedItems] = useState<Array<number>>([]);
   const toggleSelectItem = (index: number, item: Item | Fungus) => {
     if (canSelect && !canSelect(item)) return;
     if (selectedItems.includes(index)) {
       const newItems = selectedItems.filter(i => i !== index);
       radio ? setSelectedItems([]) : setSelectedItems(newItems);
-      onSelect && onSelect(null);
+      onSelect && onSelect((radio ? [] : newItems.map(i => items[i])) as Array<Item> | Array<Fungus>);
     } else {
       radio ? setSelectedItems([index]) : setSelectedItems([...selectedItems, index]);
-      onSelect && onSelect(item);
+      onSelect && onSelect([...selectedItems, index].map(i => items[i]) as Array<Item> | Array<Fungus>);
     }
   };
 
