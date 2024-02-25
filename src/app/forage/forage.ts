@@ -29,7 +29,7 @@ const itemNumDropsTable = {
 export default async function forage(usedItemIds: Array<number>) {
   const user = await getCurrentUser();
   const usedItems = await prisma.item.findMany({ where: { id: { in: usedItemIds } } });
-  if (!user) return;
+  if (!user || user?.energy < 10) return;
 
   const fungi: Array<Fungus> = [];
   const fungusNumDrops = randomFrequencyTableEntry(fungusNumDropsTable) as number;
@@ -51,6 +51,15 @@ export default async function forage(usedItemIds: Array<number>) {
       userId: user.id,
       fungusIds: JSON.stringify(fungi.map(f => f.id)),
       itemIds: JSON.stringify(items.map(i => i.id)),
+    }
+  });
+
+  await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      energy: user.energy - 10,
     }
   });
 
