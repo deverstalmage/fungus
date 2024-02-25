@@ -18,7 +18,7 @@ export default function FungusCard({ fungus, linked = true, onClick }: { linked?
           <div className={styles.imgFrame}>
             <Image src={`/fungi/${fungus.name.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').replaceAll(' ', '-')}.png`} alt={fungus.name} width={160} height={120} />
           </div>
-          <p>{fungus.name}</p>
+          <p>{fungus.name} {fungus.type}</p>
           <RarityDisplay rarity={fungus.rarity} />
         </div>
       </Wrapper>

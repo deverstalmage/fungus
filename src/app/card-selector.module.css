@@ -1,6 +1,7 @@
 .itemList {
   display: flex;
   overflow-y: scroll;
+  max-width: 100%;
 }
 
 .itemSlot {
@@ -10,7 +11,10 @@
   border-radius: 3px;
 }
 
-.itemSlot:hover,
-.selected {
+.itemSlotWithHover:hover {
   border: 2px solid lightblue;
+}
+
+.selected {
+  border: 2px solid lightblue !important;
 }
