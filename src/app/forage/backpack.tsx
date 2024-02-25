@@ -1,19 +1,46 @@
 'use client';
 import { useState } from "react";
 import forageAction from './forage';
-import styles from './forage-button.module.css';
 import { Fungus, getFungus } from '@/db/fungi';
 import { Item, getItem } from '@/db/items';
 import Modal from '../modal';
 import CardSelector from '../card-selector';
+import ItemCard from "../item-card";
+import styles from './backpack.module.css';
 
-export default function Backpack({ items }: { items: Array<Item>; }) {
+export default function Backpack({ items, canForage }: { items: Array<Item>; canForage: boolean; }) {
   const [selectedItems, setSelectedItems] = useState<Array<Item>>([]);
-  const withoutKits = items.filter(i => i.id !== 4);
-  const numKits = items.filter(i => i.id === 4).length;
-
+  const [selectedFoundFungi, setSelectedFoundFungi] = useState<Array<Fungus>>([]);
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [foundFungi, setFoundFungi] = useState<Array<Fungus>>([]);
+
+  const withoutKits = items.filter(i => i.id !== 4);
+  const numKits = items.filter(i => i.id === 4).length;
+  const unselectedFungi = foundFungi.filter(f => !selectedFoundFungi.includes(f));
+  const unselectedFungiValue = unselectedFungi.reduce((prev, current) => {
+    let val;
+    switch (current.rarity) {
+      case 'Common':
+        val = 100;
+        break;
+      case 'Uncommon':
+        val = 500;
+        break;
+      case 'Rare':
+        val = 10000;
+        break;
+      case 'Ultra Rare':
+        val = 100000;
+        break;
+      case 'Secret':
+        val = 1000000;
+        break;
+      default:
+        val = 999999999;
+    }
+
+    return prev + val;
+  }, 0);
 
   const action = async () => {
     const results = await forageAction([]);
@@ -26,23 +53,40 @@ export default function Backpack({ items }: { items: Array<Item>; }) {
     setFoundFungi(fungi);
   };
 
-  const canForage = true; // make sure there is enough energy to go foraging
+  const collect = async () => {
+
+  };
 
   return (
     <>
       {showResultsModal && (
-        <Modal onDismiss={() => setShowResultsModal(false)}>
+        <Modal noDismiss={true} onDismiss={() => setShowResultsModal(false)}>
           <div>
-            <p>Select fungi to take spore samples from (you have {numKits} Spore Collection Kits):</p>
+            <p>Select fungi to take spore samples from</p>
+            <p>Using {selectedFoundFungi.length} / {numKits} Kits</p>
+            <p>Fruit collected from the rest of the fungi: {unselectedFungiValue}</p>
 
-            <CardSelector items={foundFungi} maxSelect={numKits} />
+            <CardSelector items={foundFungi} maxSelect={numKits} onSelect={fungi => setSelectedFoundFungi(fungi as Array<Fungus>)} />
+
+            <p>You also got the following items:</p>
+            <div className={styles.items}>
+              {items.map((item, i) => {
+                return (
+                  <ItemCard linked={false} item={item} key={i} />
+                );
+              })}
+            </div>
+
+            <form action={collect}>
+              <button>Collect {unselectedFungiValue} fruits {selectedFoundFungi.length !== 0 && `& ${selectedFoundFungi.length} spores`}</button>
+            </form>
           </div>
         </Modal>
       )}
       {withoutKits.length !== 0 && (<h2>Select items to use on the expedition</h2>)}
       <CardSelector items={withoutKits} onSelect={items => setSelectedItems(items as Array<Item>)} />
       <form action={action}>
-        <button className={styles.button} type="submit" disabled={!canForage}>Go foraging</button>
+        <button type="submit" disabled={!canForage}>Go foraging</button>
       </form>
     </>
   );

@@ -1,6 +1,7 @@
 .itemList {
   display: flex;
   overflow-y: scroll;
+  flex-wrap: wrap;
   max-width: 100%;
 }
 
