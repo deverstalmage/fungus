@@ -38,5 +38,5 @@ export function randomThing(table: Array<Item | Fungus>): Item | Fungus {
 export async function getInventory(u?: User) {
   const user = u || await getCurrentUser();
   const items = await prisma.item.findMany({ where: { userId: user?.id } });
-  return items.map(i => getItem(i.itemId));
+  return items.map(i => ({ uid: i.id, ...getItem(i.itemId) }));
 }

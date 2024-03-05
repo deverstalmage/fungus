@@ -8,6 +8,8 @@ import Modal from '../modal';
 import CardSelector from '../card-selector';
 import ItemCard from "../item-card";
 import styles from './backpack.module.css';
+import purchaseKits from "./purchase-kits";
+import { useRouter } from "next/navigation";
 
 export default function Backpack({ items, canForage }: { items: Array<Item>; canForage: boolean; }) {
   const [selectedItems, setSelectedItems] = useState<Array<Item>>([]);
@@ -16,6 +18,7 @@ export default function Backpack({ items, canForage }: { items: Array<Item>; can
   const [foundFungi, setFoundFungi] = useState<Array<Fungus>>([]);
   const [foundItems, setFoundItems] = useState<Array<Item>>([]);
   const [forageResultsId, setForageResultsId] = useState<number>();
+  const router = useRouter();
 
   const withoutKits = items.filter(i => i.id !== 4);
   const numKits = items.filter(i => i.id === 4).length;
@@ -65,6 +68,17 @@ export default function Backpack({ items, canForage }: { items: Array<Item>; can
     setShowResultsModal(false);
   };
 
+  const buyKits = async () => {
+    purchaseKits(1);
+    router.refresh();
+  };
+
+  const collectMessage = unselectedFungiValue > 0 && selectedFoundFungi.length
+    ? `Collect ${unselectedFungiValue} fruits and ${selectedFoundFungi.length} spores`
+    : unselectedFungiValue === 0 && selectedFoundFungi.length
+      ? `Collect ${selectedFoundFungi.length} spores`
+      : `Collect ${unselectedFungiValue} fruits`;
+
   return (
     <>
       {showResultsModal && (
@@ -72,6 +86,9 @@ export default function Backpack({ items, canForage }: { items: Array<Item>; can
           <div>
             <p>Select fungi to take spore samples from</p>
             <p>Using {selectedFoundFungi.length} / {numKits} Kits</p>
+            <form action={buyKits}>
+              <button type="submit">Buy a kit for 1000</button>
+            </form>
             <p>Fruit collected from the rest of the fungi: {unselectedFungiValue}</p>
 
             <CardSelector items={foundFungi} maxSelect={numKits} onSelect={fungi => setSelectedFoundFungi(fungi as Array<Fungus>)} />
@@ -86,7 +103,7 @@ export default function Backpack({ items, canForage }: { items: Array<Item>; can
             </div>
 
             <form action={collect}>
-              <button>Collect {unselectedFungiValue} fruits {selectedFoundFungi.length !== 0 && `& ${selectedFoundFungi.length} spores`}</button>
+              <button>{collectMessage}</button>
             </form>
           </div>
         </Modal>

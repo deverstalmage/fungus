@@ -22,9 +22,11 @@ export default async function collect(selectedFungi: Fungus[], forageResultsId: 
   if (selectedFungi.length && selectedFungi.length <= collectionKits.length) {
 
     const usedKits = [];
-    for (let i = 0; i <= selectedFungi.length; i++) {
-      usedKits.push(collectionKits[i]);
+    for (let i = 0; i < selectedFungi.length; i++) {
+      usedKits.push({ id: collectionKits[i].uid });
     }
+
+    console.log(`using ${usedKits.length} kits`);
 
     const fungi = JSON.parse(results.fungusIds).map((r: number) => getFungus(r));
     await prisma.user.update({
@@ -36,7 +38,7 @@ export default async function collect(selectedFungi: Fungus[], forageResultsId: 
           create: fungi.map((f: Fungus) => ({ fungusId: f.id })),
         },
         items: {
-          deleteMany: usedKits.map((i: Item) => ({ id: i.uid })),
+          delete: usedKits,
         }
       },
       include: {
