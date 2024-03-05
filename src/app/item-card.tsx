@@ -14,7 +14,7 @@ export default function Item({ item, linked = true, onClick }: { linked?: boolea
     <>
       <Wrapper linked={linked} item={item} onClick={onClick}>
         <div className={styles.card}>
-          <div className={styles.type}>Consumable</div>
+          <div className={styles.type}>{item.type}</div>
           <div className={styles.imgFrame}>
             <Image src={`/items/${item.name.toLowerCase().replace(/[^a-zA-Z0-9 ]/g, '').replaceAll(' ', '-')}.png`} alt={item.name} width={160} height={120} />
           </div>

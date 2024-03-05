@@ -10,6 +10,10 @@ import ItemCard from "../item-card";
 import styles from './backpack.module.css';
 import purchaseKits from "./purchase-kits";
 import { useRouter } from "next/navigation";
+import { fruitForRarity } from "@/lib/rarity";
+import notify from "@/lib/notify";
+import GetItem from "../get-item";
+import FungusCard from "../fungus-card";
 
 export default function Backpack({ items, canForage }: { items: Array<Item>; canForage: boolean; }) {
   const [selectedItems, setSelectedItems] = useState<Array<Item>>([]);
@@ -23,30 +27,7 @@ export default function Backpack({ items, canForage }: { items: Array<Item>; can
   const withoutKits = items.filter(i => i.id !== 4);
   const numKits = items.filter(i => i.id === 4).length;
   const unselectedFungi = foundFungi.filter(f => !selectedFoundFungi.includes(f));
-  const unselectedFungiValue = unselectedFungi.reduce((prev, current) => {
-    let val;
-    switch (current.rarity) {
-      case 'Common':
-        val = 100;
-        break;
-      case 'Uncommon':
-        val = 500;
-        break;
-      case 'Rare':
-        val = 10000;
-        break;
-      case 'Ultra Rare':
-        val = 100000;
-        break;
-      case 'Secret':
-        val = 1000000;
-        break;
-      default:
-        val = 999999999;
-    }
-
-    return prev + val;
-  }, 0);
+  const unselectedFungiValue = unselectedFungi.reduce((prev, current) => prev + fruitForRarity(current.rarity), 0);
 
   const action = async () => {
     const results = await forageAction([]);
@@ -65,6 +46,24 @@ export default function Backpack({ items, canForage }: { items: Array<Item>; can
   const collect = async () => {
     if (!forageResultsId) return;
     const results = await collectAction(selectedFoundFungi, forageResultsId);
+    if (!results) return;
+
+    const { sporesObtained, itemsObtained } = results;
+
+    for (const item of itemsObtained) {
+      notify(GetItem({ item }));
+    }
+
+    for (const spore of sporesObtained) {
+      notify(
+        <>
+          <FungusCard fungus={spore} />
+          <p>Gathered spores</p>
+        </>
+      );
+    }
+
+    router.refresh();
     setShowResultsModal(false);
   };
 

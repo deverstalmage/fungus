@@ -1,7 +1,6 @@
 'use client';
 import turnCompost from './turn-compost';
 import styles from './turn-button.module.css';
-import { alertItem } from '@/lib/inventory';
 import { useRouter } from 'next/navigation';
 import { BaseItem, Item } from '@/db/items';
 import notify from '@/lib/notify';

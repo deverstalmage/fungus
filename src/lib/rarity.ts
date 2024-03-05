@@ -27,6 +27,23 @@ export const Rarities: RarityMap = {
   Developer: 0,
 };
 
+export function fruitForRarity(rarity: Rarity) {
+  switch (rarity) {
+    case 'Common':
+      return 100;
+    case 'Uncommon':
+      return 500;
+    case 'Rare':
+      return 10000;
+    case 'Ultra Rare':
+      return 100000;
+    case 'Secret':
+      return 1000000;
+    default:
+      return 999999999;
+  }
+}
+
 export function roll(rarities?: Array<Rarity>): Rarity {
   const r = Math.random();
 
