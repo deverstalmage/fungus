@@ -2,7 +2,7 @@
 import { CombinedFungus, Fungus, getFungus } from "@/db/fungi";
 import styles from './plot.module.css';
 import FungusCard from "@/app/fungus-card";
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { Item, SubstrateItem, getItem } from "@/db/items";
 import CardSelector from "@/app/card-selector";
 import seed from './seed';
@@ -46,6 +46,7 @@ type FungusState = CombinedFungus | undefined;
 export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level, inventory, now }: { inventory: Item[], gardenPlotId: number, availableFungi: CombinedFungus[], plantedFungi: CombinedFungus[], level: number; now: number; }) {
   const router = useRouter();
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showFertilize, setShowFertilize] = useState(false);
   const [plantingSpace, setPlantingSpace] = useState(0);
   const [selectedGrowthMedium, setSelectedGrowthMedium] = useState<SubstrateState>();
   const [selectedFungus, setSelectedFungus] = useState<FungusState>();
@@ -78,6 +79,7 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
       };
 
       const harvestAction = async () => {
+        console.log('harvesting....');
         const result = await harvest(f.uid);
         if (result) {
           notify(<p>Successfully harvested {result} fruit!</p>);
@@ -108,14 +110,15 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
       };
 
       spaces.push(
-        <div key={i} className={`${styles.space} ${selected && styles.selected}`} onClick={() => selected ? setSelectedPlantedFungus(undefined) : setSelectedPlantedFungus(f)}>
-          <FungusCard linked={false} fungus={f} />
+        <div key={i} className={`${styles.space} ${selected && styles.selected}`}>
+          <div onClick={() => selected ? setSelectedPlantedFungus(undefined) : setSelectedPlantedFungus(f)}><FungusCard linked={false} fungus={f} /></div>
           <p>Harvest <Countdown date={nextHarvest || DateTime.now().toISO()} tick={tick} /></p>
           {selected && (
             <div className={styles.actions}>
               <form action={harvestAction}>
                 <button type="submit" disabled={!canHarvest}>Harvest</button>
               </form>
+              <button onClick={() => setShowFertilize(true)}>Fertilize</button>
               <button onClick={() => setShowConfirm(true)}>Remove</button>
             </div>
           )}
