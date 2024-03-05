@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import styles from './modal.module.css';
 
-export default function Modal({ children, onDismiss, noDismiss = false }: { children: React.ReactNode; onDismiss?: () => void; noDismiss?: boolean; }) {
+export default function Modal({ children, onDismiss, noDismiss = false, onClose }: { children: React.ReactNode; onDismiss?: () => void; noDismiss?: boolean; onClose?: () => void; }) {
   const router = useRouter();
   const dialogRef = useRef<ElementRef<'dialog'>>(null);
 
@@ -15,8 +15,8 @@ export default function Modal({ children, onDismiss, noDismiss = false }: { chil
     }
   }, []);
 
-  function onClose() {
-    router.back();
+  function close() {
+    onClose ? onClose() : router.back();
   }
 
   function dismiss(event: MouseEvent) {
@@ -30,7 +30,7 @@ export default function Modal({ children, onDismiss, noDismiss = false }: { chil
 
   return createPortal(
     <div className={styles.modalBackdrop}>{/*  onClick={onDismiss} */}
-      <dialog ref={dialogRef} className={styles.modal} onClose={onClose}>
+      <dialog ref={dialogRef} className={styles.modal} onClose={close}>
         <div className={styles.content}>
           {children}
         </div>

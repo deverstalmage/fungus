@@ -120,7 +120,7 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
             </div>
           )}
           {showConfirm && (
-            <Modal onDismiss={() => setShowConfirm(false)}>
+            <Modal onDismiss={() => setShowConfirm(false)} onClose={() => setShowConfirm(false)}>
               <p>Would you like to gather spors from the fungus before removing it?</p>
               <div>
                 <form action={() => removeWithKit(true)}><button type="submit" disabled={!hasKit}>Gather spores and remove (1x Spore Collection Kit)</button></form>
@@ -155,7 +155,7 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
   };
 
   const fungusPicker = plantingSpace !== 0 ? (
-    <>
+    <Modal onDismiss={() => setPlantingSpace(0)} onClose={() => setPlantingSpace(0)}>
       {growthMediums.length && availableFungi.length ? (
         <>
           <p>Pick substrate: {selectedGrowthMedium?.name}</p>
@@ -175,7 +175,7 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
           No growth media and/or fungi available
         </div>
       )}
-    </>
+    </Modal>
   ) : ``;
 
   return (
