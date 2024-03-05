@@ -3,7 +3,7 @@ import { CombinedFungus, Fungus, getFungus } from "@/db/fungi";
 import styles from './plot.module.css';
 import FungusCard from "@/app/fungus-card";
 import { SyntheticEvent, useState } from "react";
-import { Item, SubstrateItem, getItem } from "@/db/items";
+import { FertilizerItem, Item, SubstrateItem, getItem } from "@/db/items";
 import CardSelector from "@/app/card-selector";
 import seed from './seed';
 import { useRouter } from 'next/navigation';
@@ -13,6 +13,7 @@ import harvest from "./harvest";
 import remove from "./remove";
 import notify from "@/lib/notify";
 import Modal from "@/app/modal";
+import fertilizeAction from "./fertilize";
 
 export const intervalMilli = 1000 * 60 * 5; // 5 minutes
 export const invervalDur = { milliseconds: intervalMilli };
@@ -51,9 +52,11 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
   const [selectedGrowthMedium, setSelectedGrowthMedium] = useState<SubstrateState>();
   const [selectedFungus, setSelectedFungus] = useState<FungusState>();
   const [selectedPlantedFungus, setSelectedPlantedFungus] = useState<FungusState>();
+  const [selectedFertilizer, setSelectedFertilizer] = useState<FertilizerItem>();
 
   const plotSize = plotSizeByLevel[level - 1];
-  const growthMediums = inventory.filter(i => i.type === 'Substrate');
+  const substrates = inventory.filter(i => i.type === 'Substrate');
+  const fertilizers = inventory.filter(i => i.type === 'Fertilizer');
   const sportCollectionKits = inventory.filter(i => i.id === 4);
 
   const pickForSpace = (space: number) => {
@@ -109,6 +112,11 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
         router.refresh();
       };
 
+      const fertilize = async () => {
+        if (!selectedFungus || !selectedFertilizer) return;
+        const results = await fertilizeAction(selectedFungus.uid, selectedFertilizer.uid as number);
+      };
+
       spaces.push(
         <div key={i} className={`${styles.space} ${selected && styles.selected}`}>
           <div onClick={() => selected ? setSelectedPlantedFungus(undefined) : setSelectedPlantedFungus(f)}><FungusCard linked={false} fungus={f} /></div>
@@ -129,6 +137,15 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
                 <form action={() => removeWithKit(true)}><button type="submit" disabled={!hasKit}>Gather spores and remove (1x Spore Collection Kit)</button></form>
                 <form action={() => removeWithKit(false)}><button type="submit">Remove without gathering</button></form>
               </div>
+            </Modal>
+          )}
+          {showFertilize && (
+            <Modal onDismiss={() => setShowFertilize(false)} onClose={() => setShowFertilize(false)}>
+              <p>Select a fertilizer:</p>
+              <CardSelector items={fertilizers} radio={true} onSelect={(items) => setSelectedFertilizer(items[0] as FertilizerItem)} />
+              <form action={() => fertilize()}>
+                <button type="submit">Fertilize</button>
+              </form>
             </Modal>
           )}
         </div>
@@ -159,10 +176,10 @@ export default function Plot({ gardenPlotId, plantedFungi, availableFungi, level
 
   const fungusPicker = plantingSpace !== 0 ? (
     <Modal onDismiss={() => setPlantingSpace(0)} onClose={() => setPlantingSpace(0)}>
-      {growthMediums.length && availableFungi.length ? (
+      {substrates.length && availableFungi.length ? (
         <>
           <p>Pick substrate: {selectedGrowthMedium?.name}</p>
-          <CardSelector items={growthMediums} radio={true} onSelect={(items) => setSelectedGrowthMedium(items[0] as SubstrateState)} />
+          <CardSelector items={substrates} radio={true} onSelect={(items) => setSelectedGrowthMedium(items[0] as SubstrateState)} />
 
           <p>Pick fungus spores to seed: {selectedFungus?.name}</p>
           <CardSelector items={availableFungi} radio={true} onSelect={(items) => setSelectedFungus(items[0] as FungusState)} />

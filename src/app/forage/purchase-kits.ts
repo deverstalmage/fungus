@@ -4,7 +4,7 @@ import getCurrentUser from "@/lib/user";
 
 export default async function purchaseKits(num: number) {
   const user = await getCurrentUser();
-  if (!user) return;
+  if (!user || user.gold < 1000) return;
   const kits = [];
   for (let i = 0; i < num; i++) {
     kits.push({ itemId: 4 });
