@@ -1,6 +1,7 @@
 'use client';
 import { useState } from "react";
 import forageAction from './forage';
+import collectAction from './collect';
 import { Fungus, getFungus } from '@/db/fungi';
 import { Item, getItem } from '@/db/items';
 import Modal from '../modal';
@@ -13,6 +14,8 @@ export default function Backpack({ items, canForage }: { items: Array<Item>; can
   const [selectedFoundFungi, setSelectedFoundFungi] = useState<Array<Fungus>>([]);
   const [showResultsModal, setShowResultsModal] = useState(false);
   const [foundFungi, setFoundFungi] = useState<Array<Fungus>>([]);
+  const [foundItems, setFoundItems] = useState<Array<Item>>([]);
+  const [forageResultsId, setForageResultsId] = useState<number>();
 
   const withoutKits = items.filter(i => i.id !== 4);
   const numKits = items.filter(i => i.id === 4).length;
@@ -45,16 +48,21 @@ export default function Backpack({ items, canForage }: { items: Array<Item>; can
   const action = async () => {
     const results = await forageAction([]);
     if (!results) return;
+    setForageResultsId(results.id);
 
     const fungi = JSON.parse(results.fungusIds).map((r: number) => getFungus(r));
     const items = JSON.parse(results.itemIds).map((r: number) => getItem(r));
 
+
     setShowResultsModal(true);
     setFoundFungi(fungi);
+    setFoundItems(items);
   };
 
   const collect = async () => {
-
+    if (!forageResultsId) return;
+    const results = await collectAction(selectedFoundFungi, forageResultsId);
+    setShowResultsModal(false);
   };
 
   return (
@@ -70,7 +78,7 @@ export default function Backpack({ items, canForage }: { items: Array<Item>; can
 
             <p>You also got the following items:</p>
             <div className={styles.items}>
-              {items.map((item, i) => {
+              {foundItems.map((item, i) => {
                 return (
                   <ItemCard linked={false} item={item} key={i} />
                 );

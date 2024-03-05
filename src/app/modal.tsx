@@ -1,6 +1,6 @@
 'use client';
 
-import { type ElementRef, useEffect, useRef, MouseEvent, ReactEventHandler } from 'react';
+import { type ElementRef, useEffect, useRef, MouseEvent, SyntheticEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import styles from './modal.module.css';
@@ -15,8 +15,19 @@ export default function Modal({ children, onDismiss, noDismiss = false, onClose 
     }
   }, []);
 
-  function close() {
-    onClose ? onClose() : router.back();
+  function close(e: SyntheticEvent) {
+
+    if (noDismiss) {
+      e.preventDefault();
+    } else {
+      if (onClose) {
+        e.preventDefault();
+        onClose();
+      } else {
+        router.back();
+      }
+    }
+
   }
 
   function dismiss(event: MouseEvent) {
@@ -30,7 +41,7 @@ export default function Modal({ children, onDismiss, noDismiss = false, onClose 
 
   return createPortal(
     <div className={styles.modalBackdrop}>{/*  onClick={onDismiss} */}
-      <dialog ref={dialogRef} className={styles.modal} onClose={close}>
+      <dialog ref={dialogRef} className={styles.modal} onClose={close} onCancel={close}>
         <div className={styles.content}>
           {children}
         </div>

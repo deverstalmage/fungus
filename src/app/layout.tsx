@@ -7,6 +7,8 @@ import getCurrentUser from '@/lib/user';
 import styles from '@/app/layout.module.css';
 import Link from 'next/link';
 
+import StatusBar from '@/app/status-bar';
+
 const poppins = Poppins({ weight: '400', subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -41,11 +43,7 @@ export default async function RootLayout({
         />
         <div className={styles.layout}>
           <div><Link href={'/'}>Home</Link> | <Link href="/garden">Garden</Link> | <Link href="/forage">Forage</Link> | <Link href="/inventory">Inventory</Link></div>
-          <div className={styles.hud}>
-            <div>Energy: [ {user.energy || 0} / 100 ]</div>
-            <div>Fruit: {user.fruit || 0}</div>
-            <div>Gold: {user.gold || 0}</div>
-          </div>
+          <StatusBar user={user} />
           {children}
           {modal}
         </div>

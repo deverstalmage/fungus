@@ -33,7 +33,6 @@ export default async function forage(usedItemIds: Array<number>) {
 
   const fungi: Array<Fungus> = [];
   const fungusNumDrops = randomFrequencyTableEntry(fungusNumDropsTable) as number;
-  console.log(fungusNumDrops);
   for (let i = 0; i < fungusNumDrops; i++) {
     const d = randomThing(FungusLibrary);
     fungi.push(d as Fungus);

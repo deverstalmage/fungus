@@ -3,16 +3,23 @@ import turnCompost from './turn-compost';
 import styles from './turn-button.module.css';
 import { alertItem } from '@/lib/inventory';
 import { useRouter } from 'next/navigation';
+import { BaseItem, Item } from '@/db/items';
+import notify from '@/lib/notify';
+import GetItem from '@/app/get-item';
 
 export default function TurnButton({ canTurn = false }) {
   const router = useRouter();
 
+
+
   const withToast = async () => {
-    const droppedItem = await turnCompost();
-    if (!droppedItem) return;
-    alertItem(droppedItem);
+    const droppedItems = await turnCompost();
+    if (!droppedItems) return;
+    for (const item of droppedItems) {
+      notify(GetItem({ item }));
+    }
     router.refresh();
-    return droppedItem;
+    return droppedItems;
   };
 
   return (

@@ -5,12 +5,7 @@ import GetItem from '@/app/get-item';
 import { Rarity, roll } from "./rarity";
 import notify from "./notify";
 import { Fungus } from "@/db/fungi";
-
-export async function alertItem(items: Item[]) {
-  for (const item of items) {
-    notify(GetItem({ item }));
-  }
-}
+import { User } from "@prisma/client";
 
 export async function obtainItem(id: number) {
   const item = getItem(id);
@@ -40,8 +35,8 @@ export function randomThing(table: Array<Item | Fungus>): Item | Fungus {
   return things[Math.floor(Math.random() * things.length)];
 }
 
-export async function getInventory() {
-  const user = await getCurrentUser();
+export async function getInventory(u?: User) {
+  const user = u || await getCurrentUser();
   const items = await prisma.item.findMany({ where: { userId: user?.id } });
   return items.map(i => getItem(i.itemId));
 }

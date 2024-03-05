@@ -2,7 +2,7 @@
 import { DateTime } from 'luxon';
 import { randomFrequencyTableEntry } from '@/lib/rarity';
 import { hasPassed } from '@/lib/time';
-import { ItemLibrary, getItem } from '@/db/items';
+import { Item, ItemLibrary, getItem } from '@/db/items';
 import prisma from '@/lib/prisma';
 import { obtainItem, randomThing } from '@/lib/inventory';
 import { turnInvervalDur } from './intervals';
@@ -23,7 +23,7 @@ export default async function turnCompost() {
     const items = [];
     const numDrops = randomFrequencyTableEntry(dropFrequency) as number || 0;
     for (let i = 0; i < numDrops; i++) {
-      const d = randomThing(dropTable);
+      const d = randomThing(dropTable) as Item;
       items.push(d);
       await obtainItem(d.id);
     }
